@@ -1,5 +1,5 @@
 import torch.nn as nn
-from tnn.layers.t_resnet_layers import tResidualLayer, tAntiSymmetricResidualLayer, tHamiltonianResidualLayer
+from tnn.layers import tResidualLayer, tAntiSymmetricResidualLayer, tHamiltonianResidualLayer
 
 
 class tResNet(nn.Module):

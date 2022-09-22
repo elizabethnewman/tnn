@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='tnn',
     version='0.0.1',
-    packages=['tnn'],
+    packages=find_packages(),
     url='https://github.com/elizabethnewman/tnn',
     license='MIT',
     author='Elizabeth Newman',

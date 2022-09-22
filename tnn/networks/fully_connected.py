@@ -1,5 +1,5 @@
 import torch.nn as nn
-from tnn.layers.single_layers import LinearLayer
+from tnn.layers import LinearLayer
 
 
 class FullyConnected(nn.Sequential):

@@ -1,5 +1,5 @@
 import torch.nn as nn
-from tnn.layers.resnet_layers import ResidualLayer, AntiSymmetricResidualLayer, HamiltonianResidualLayer
+from tnn.layers import ResidualLayer, AntiSymmetricResidualLayer, HamiltonianResidualLayer
 
 
 class ResNet(nn.Module):
@@ -49,4 +49,3 @@ class HamiltonianResNet(nn.Module):
         for layer in self.layers:
             x, z = layer(x, z)
         return x
-    
