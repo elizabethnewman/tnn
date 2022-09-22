@@ -24,6 +24,9 @@ def optimizer_parameters(optimizer):
     names = ()
     for name in keys:
         param = optimizer.param_groups[0][name]
+        if param is None:
+            param = 0
+
         if isinstance(param, tuple):
             names += len(param) * (name,)
             his += [*param]

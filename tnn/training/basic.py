@@ -100,7 +100,7 @@ def test(model: Module, criterion: Module, test_loader):
             output = model(data)
             num_samples += data.shape[0]
 
-            test_loss += criterion(output, target)
+            test_loss += criterion(output, target).item()
             pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
 
             correct += pred.eq(target.view_as(pred)).sum().item()
