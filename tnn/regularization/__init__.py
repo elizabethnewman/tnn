@@ -1,1 +1,1 @@
-from regularizers import BlockRegularization, TikhonovRegularization, SmoothTimeRegularization
+from .regularizers import BlockRegularization, TikhonovRegularization, SmoothTimeRegularization

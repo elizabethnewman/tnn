@@ -1,1 +1,1 @@
-from tnn.loss.t_loss import tMSELoss, tCrossEntropyLoss, tLogSoftmax
+from .t_loss import tMSELoss, tCrossEntropyLoss, tLogSoftmax

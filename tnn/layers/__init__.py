@@ -1,2 +1,2 @@
-from tnn.layers.single_layers import LinearLayer, AntiSymmetricLayer, HamiltonianLayer
-from tnn.layers.resnet_layers import ResidualLayer, AntiSymmetricResidualLayer, HamiltonianResidualLayer
+from .single_layers import LinearLayer, AntiSymmetricLayer, HamiltonianLayer
+from .resnet_layers import ResidualLayer, AntiSymmetricResidualLayer, HamiltonianResidualLayer
