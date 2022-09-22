@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from networks.single_layers import LinearLayer, AntiSymmetricLayer, HamiltonianLayer
+from tnn.layers import LinearLayer, AntiSymmetricLayer, HamiltonianLayer
 
 
 class ResidualLayer(nn.Module):

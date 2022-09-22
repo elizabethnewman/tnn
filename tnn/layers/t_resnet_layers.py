@@ -1,5 +1,5 @@
 import torch.nn as nn
-from tnn.layers.t_single_layers import tLinearLayer, tAntiSymmetricLayer, tHamiltonianLayer
+from tnn.layers import tLinearLayer, tAntiSymmetricLayer, tHamiltonianLayer
 
 
 class tResidualLayer(nn.Module):
