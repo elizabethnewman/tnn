@@ -80,7 +80,7 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None)
         loss = criterion(output, target)
 
         if regularizer is not None:
-            loss += regularizer(model)
+            loss = loss + regularizer(model)
 
         running_loss += data.shape[0] * loss.item()
         num_samples += data.shape[0]
