@@ -8,7 +8,7 @@ from tnn.loss import tLoss
 from copy import deepcopy
 
 
-def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regularizer=None,
+def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, regularizer=None,
           max_epochs=10, verbose=True):
 
     keys, opt_params = optimizer_parameters(optimizer)
@@ -71,7 +71,8 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regul
             print(results['frmt'].format(*his))
 
         # update learning rate
-        scheduler.step()
+        if scheduler is not None:
+            scheduler.step()
 
     total_end = time.time()
     print('Total training time = ', total_end - total_start)
