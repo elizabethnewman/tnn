@@ -19,7 +19,7 @@ layer = lay.LinearLayer(in_features, out_features, activation=nn.Tanh())
 out = layer(x)
 ```
 
-Creating a tensor layer is also simple, but requires a few more parameters, namely the size of the third dimension and an orthogonal transformation matrix
+Creating a tensor layer is also simple, but requires a few more parameters, namely the size of the third dimension and an orthogonal transformation matrix. In accordance with the tensor-tensor product notation, the second dimension of the data is the sample dimension.
 ```python
 import tnn.nn as nn
 import tnn.layers as lay
@@ -32,12 +32,12 @@ dim3 = 5
 n_samples = 10
 x = torch.randn(in_features, n_samples, dim3) # note: the second dimension is the sample dimension
 
-# create network from la
-layer = lay.tLinearLayer(in_features, out_features, activation=nn.Tanh())
+# create a tlayer
+layer = lay.tLinearLayer(in_features, out_features, dim3, activation=nn.Tanh(), M=M)
 
-out = layer(x)
+out = layer(x) # or out = layer(x, M) if M is not an attribute of the layer
 ```
-In accordance with the tensor-tensor product notation, the second dimension of the data is the sample dimension.
+
 
 
 ## Building Blocks
