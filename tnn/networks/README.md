@@ -27,6 +27,8 @@ net = nn.Sequential(
 out = net(x)
 ```
 
+We also include some built-in networks, which can also be concatenated.
+
 ## Building Blocks
 
 * `FullyConnected` or `tFullyConnected` is a sequence of `LinearLayer` or `tLinearLayer`, respectively.
