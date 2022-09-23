@@ -2,6 +2,7 @@
 
 ## Quick Start
 
+Creating a fully-connected layer is simple: 
 ```python
 import tnn.nn as nn
 import tnn.layers as lay
@@ -12,11 +13,31 @@ out_features = 4
 n_samples = 10
 x = torch.randn(n_samples, in_features)
 
-# create network from la
+# create a layer
 layer = lay.LinearLayer(in_features, out_features, activation=nn.Tanh())
 
 out = layer(x)
 ```
+
+Creating a tensor layer is also simple, but requires a few more parameters, namely the size of the third dimension and an orthogonal transformation matrix
+```python
+import tnn.nn as nn
+import tnn.layers as lay
+import tnn.tensor_utils as t_utils
+
+# setup data
+in_features = 3
+out_features = 4
+dim3 = 5
+n_samples = 10
+x = torch.randn(in_features, n_samples, dim3) # note: the second dimension is the sample dimension
+
+# create network from la
+layer = lay.tLinearLayer(in_features, out_features, activation=nn.Tanh())
+
+out = layer(x)
+```
+In accordance with the tensor-tensor product notation, the second dimension of the data is the sample dimension.
 
 
 ## Building Blocks
