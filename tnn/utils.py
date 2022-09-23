@@ -12,3 +12,11 @@ def seed_everything(seed):
 
     np.random.seed(seed)
     random.seed(seed)
+
+
+def number_network_weights(net):
+    n = 0
+    for p in net.parameters():
+        n += p.numel()
+
+    return n
