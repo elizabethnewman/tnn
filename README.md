@@ -53,12 +53,45 @@ seed_everything(1234)
 net = torch.nn.Sequential(View((-1, 784)), 
                           FullyConnected([784, 20, 10], activation=torch.nn.Tanh())
                           )
+print('number of network weights:', number_network_weights(net))                       
                           
 # choose loss function
 loss = torch.nn.CrossEntropyLoss()
 
 # choose optimizer
-optimizer = torch.optim.Adam(net.parameters(), weight_decay=1e-2)
+optimizer = torch.optim.Adam(net.parameters())
+                    
+# train!
+results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True)
+```
+
+If we want to train a tNN, we can use nearly identical code!
+```python
+from tnn.layers import Permute
+from tnn.networks import tFullyConnected
+from tnn.loss import tCrossEntropyLoss
+from tnn.training.batch_train import train
+from tnn.tensor_utils import dct_matrix
+from tnn.utils import seed_everything, number_network_weights
+
+# seed for reproducibility
+seed_everything(1234)
+
+# create transformation matrix
+dim3 = 28
+M = dct_matrix(dim3, dtype=torch.float32)
+
+# form network
+net = torch.nn.Sequential(Permute(), 
+                          tFullyConnected((28, 50, 10), dim3, M=M, activation=torch.nn.Tanh())
+                          )
+print('number of network weights:', number_network_weights(net))                       
+                          
+# choose loss function
+loss = tCrossEntropyLoss(M=M)
+
+# choose optimizer
+optimizer = torch.optim.Adam(net.parameters())
                     
 # train!
 results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True)
