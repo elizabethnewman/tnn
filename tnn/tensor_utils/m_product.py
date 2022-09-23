@@ -20,18 +20,19 @@ def facewise(A, B):
     C = A @ B
 
     # return to original orientation
-    C = torch.moveaxis(C, (-2, -1), (-2, -1))
+    C = torch.moveaxis(C, (-2, -1), (0, 1))
 
     return C
 
 
-def mprod(A, B, M, transpose=False, conjugate=False, inverse=False):
-    modek_args = {'transpose': transpose, 'conjugate': conjugate, 'inverse': inverse}
+def mprod(A, B, M, transpose=True, conjugate=False, inverse=False):
+    # default is M is orthogonal
+    # modek_args = {'transpose': transpose, 'conjugate': conjugate, 'inverse': inverse}
 
     A = modek_product(A, M)
     B = modek_product(B, M)
     C = facewise(A, B)
-    C = modek_product(C, M, **modek_args)
+    C = modek_product(C, M.T)
     return C
 
 

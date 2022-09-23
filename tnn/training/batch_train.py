@@ -4,6 +4,7 @@ from torch.nn import Module
 from torch.optim import Optimizer
 import time
 from tnn.training import optimizer_parameters, parameters_norm
+from tnn.loss import tLoss
 
 
 def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regularizer=None,
@@ -77,7 +78,12 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None)
         optimizer.zero_grad()
         output = model(data)
 
-        loss = criterion(output, target)
+        if isinstance(criterion, tLoss):
+            loss, target_pred = criterion(output, target)
+            pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
+        else:
+            loss = criterion(output, target)
+            pred = output.argmax(dim=1, keepdim=True).squeeze()
 
         running_loss += data.shape[0] * loss.item()
         num_samples += data.shape[0]
@@ -85,7 +91,6 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None)
         if regularizer is not None:
             loss = loss + regularizer(model)
 
-        pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
         correct += pred.eq(target.view_as(pred)).sum().item()
 
         loss.backward()
@@ -106,8 +111,13 @@ def test(model: Module, criterion: Module, test_loader):
             output = model(data)
             num_samples += data.shape[0]
 
-            test_loss += criterion(output, target).item()
-            pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
+            if isinstance(criterion, tLoss):
+                loss, target_pred = criterion(output, target)
+                test_loss += loss.item()
+                pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
+            else:
+                test_loss += criterion(output, target).item()
+                pred = output.argmax(dim=1, keepdim=True).squeeze()
 
             correct += pred.eq(target.view_as(pred)).sum().item()
 

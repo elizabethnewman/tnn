@@ -3,9 +3,13 @@ import torch.nn
 import torch.nn.functional as F
 from tnn.tensor_utils import modek_product
 
-class tMSELoss(_Loss):
 
-    __constants__ = ['reduction']
+class tLoss(_Loss):
+    def __init__(self, size_average=None, reduce=None, reduction: str = 'mean') -> None:
+        super(tLoss, self).__init__(size_average, reduce, reduction)
+
+
+class tMSELoss(tLoss):
 
     def __init__(self, size_average=None, reduce=None, reduction: str = 'mean') -> None:
         super(tMSELoss, self).__init__(size_average, reduce, reduction)
@@ -15,7 +19,7 @@ class tMSELoss(_Loss):
         return F.mse_loss(input.reshape(input.shape[0], -1), target, reduction=self.reduction)
 
 
-class tCrossEntropyLoss(_Loss):
+class tCrossEntropyLoss(tLoss):
     __constants__ = ['ignore_index', 'reduction']
     ignore_index: int
 
@@ -37,7 +41,7 @@ class tCrossEntropyLoss(_Loss):
         return val, neg_input_nrm
 
 
-class tLogSoftmax(torch.nn.Module):
+class tLogSoftmax(tLoss):
 
     def __init__(self, return_spatial=False) -> None:
         super(tLogSoftmax, self).__init__()

@@ -21,7 +21,7 @@ def modek_product(A, M, k=None, transpose=False, conjugate=False, inverse=False)
     """
 
     if k is None:
-        k = A.ndim()
+        k = A.ndim - 1
 
     assert A.shape[k] == M.shape[1]
 
@@ -58,4 +58,4 @@ def modek_fold(A, k, shape_A):
 
     A = torch.reshape(A, (-1,) + shape_A[:k] + shape_A[k+1:])
 
-    return torch.np.moveaxis(A, 0, k)
+    return torch.moveaxis(A, 0, k)
