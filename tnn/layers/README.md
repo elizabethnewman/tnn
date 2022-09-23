@@ -2,6 +2,6 @@
 
 ## Single Layers
 
-* LinearLayer $$\sigma(Kx + b)$$
+* `LinearLayer`: $\sigma(Kx + b)$
 * AntiSymmetricLayer
 * HamiltonianLayer
