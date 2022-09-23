@@ -10,22 +10,24 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader,
           max_epochs=10, verbose=True):
 
     keys, opt_params = optimizer_parameters(optimizer)
+    param_norm, grad_norm = parameters_norm(net)
 
-    results = {'str': ('epoch',) + keys +
-                      ('|params|', '|grad|', 'time') +
-                      ('running_loss', 'running_acc', 'train_loss', 'train_acc', 'test_loss', 'test_acc'),
+    results = {'headers': ('',) * (4 + len(keys)) + ('running', '') + ('train', '') + ('test', ''),
+               'str': ('epoch',) + keys + ('|params|', '|grad|', 'time') +
+                      ('loss', 'acc', 'loss', 'acc', 'loss', 'acc'),
                'frmt': '{:<15d}' + len(keys) * '{:<15.4e}' + '{:<15.4e}{:<15.4e}{:<15.2f}' +
                        '{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}',
-               'val': torch.empty(0)}
+               'val': None}
 
     # initial evaluation
     train_out2 = test(net, criterion, train_loader)
     test_out = test(net, criterion, test_loader)
-    his = [-1] + (len(results['str']) - 5) * [0] + [*train_out2] + [*test_out]
-    results['val'] = torch.cat((results['val'], torch.tensor(his).view(1, -1)), dim=0)
+    his = [-1] + opt_params + [param_norm, grad_norm, 0, 0, 0] + [*train_out2] + [*test_out]
+    results['val'] = torch.tensor(his).view(1, -1)
 
     # print outs for training
     if verbose:
+        print((len(results['str']) * '{:<15s}').format(*results['headers']))
         print((len(results['str']) * '{:<15s}').format(*results['str']))
         print(results['frmt'].format(*his))
 

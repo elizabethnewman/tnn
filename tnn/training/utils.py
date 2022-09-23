@@ -43,6 +43,8 @@ def parameters_norm(net: torch.nn.Module):
         grad_norm = torch.zeros(1)
         for p in net.parameters():
             param_norm += torch.sum(p.data ** 2)
-            grad_norm += torch.sum(p.grad ** 2)
+
+            if p.grad is not None:
+                grad_norm += torch.sum(p.grad ** 2)
 
         return torch.sqrt(param_norm).item(), torch.sqrt(grad_norm).item()

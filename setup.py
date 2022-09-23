@@ -9,5 +9,5 @@ setup(
     author='Elizabeth Newman',
     author_email='elizabeth.newman@emory.edu',
     description='Matrix-Mimetic Tensor Neural Networks',
-    install_requires=['torch']
+    install_requires=['torch', 'numpy', 'scipy']
 )
