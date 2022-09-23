@@ -32,11 +32,11 @@ test_dataset = datasets.MNIST('../data', train=False, download=True, transform=t
 n_train = 1000
 n_test = 100
 
-dataset1.data = dataset1.data[:n_train]
-dataset2.data = dataset2.data[:n_test]
+train_dataset.data = train_dataset.data[:n_train]
+test_dataset.data = test_dataset.data[:n_test]
 
-train_loader = torch.utils.data.DataLoader(dataset1, batch_size=32)
-test_loader = torch.utils.data.DataLoader(dataset2, batch_size=32)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=32)
 ```
 
 Next, we will create a standard fully-connected network and train it!
