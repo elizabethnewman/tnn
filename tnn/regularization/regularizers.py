@@ -3,24 +3,16 @@ import torch.nn as nn
 
 
 class BlockRegularization(nn.Sequential):
-    def __init__(self, blocks):
-        super(BlockRegularization, self).__init__()
-        self.blocks = blocks
-
-    def evaluate(self, net):
-        reg = torch.zeros(1, requires_grad=True)
-        for i in range(len(net)):
-            reg = reg + self.blocks[i].evaluate(net[i])
-
-        return reg
+    def __init__(self, args):
+        super(BlockRegularization, self).__init__(*args)
 
 
-class TikhonovRegularization:
+class TikhonovRegularization(nn.Module):
     def __init__(self, alpha=1e-4):
         super(TikhonovRegularization, self).__init__()
         self.alpha = alpha
 
-    def evaluate(self, net: nn.Module):
+    def forward(self, net: nn.Module):
         reg = torch.zeros(1, requires_grad=True)
         for p in net.parameters():
             reg = reg + torch.norm(p) ** 2
@@ -28,12 +20,12 @@ class TikhonovRegularization:
         return 0.5 * self.alpha * reg
 
 
-class SmoothTimeRegularization:
+class SmoothTimeRegularization(nn.Module):
     def __init__(self, alpha=1e-4):
         super(SmoothTimeRegularization, self).__init__()
         self.alpha = alpha
 
-    def evaluate(self, net: nn.Module, bias=True):
+    def forward(self, net: nn.Module, bias=True):
         reg = torch.zeros(1, requires_grad=True)
 
         p_old_weight = torch.zeros(1, requires_grad=False)
