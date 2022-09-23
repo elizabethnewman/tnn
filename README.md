@@ -83,7 +83,7 @@ M = dct_matrix(dim3, dtype=torch.float32)
 
 # form network
 net = torch.nn.Sequential(Permute(), 
-                          tFullyConnected((28, 50, 10), dim3, M=M, activation=torch.nn.Tanh())
+                          tFullyConnected((28, 20, 10), dim3, M=M, activation=torch.nn.Tanh())
                           )
 print('number of network weights:', number_network_weights(net))                       
                           
