@@ -6,7 +6,7 @@ import time
 from tnn.training import optimizer_parameters, parameters_norm
 
 
-def train(net, criterion, optimizer, scheduler, train_loader, test_loader,
+def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regularizer=None,
           max_epochs=10, verbose=True):
 
     keys, opt_params = optimizer_parameters(optimizer)
@@ -34,7 +34,7 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader,
     total_start = time.time()
     for epoch in range(max_epochs):
         start = time.time()
-        train_out = train_one_epoch(net, criterion, optimizer, train_loader)
+        train_out = train_one_epoch(net, criterion, optimizer, train_loader, regularizer=regularizer)
         end = time.time()
 
         # get overall loss
@@ -65,7 +65,7 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader,
     return results
 
 
-def train_one_epoch(model, criterion, optimizer, train_loader):
+def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None):
     model.train()
     running_loss = 0
     correct = 0
@@ -78,6 +78,10 @@ def train_one_epoch(model, criterion, optimizer, train_loader):
         output = model(data)
 
         loss = criterion(output, target)
+
+        if regularizer is not None:
+            loss += regularizer(model)
+
         running_loss += data.shape[0] * loss.item()
         num_samples += data.shape[0]
 
