@@ -4,8 +4,8 @@ import scipy.fftpack
 
 
 def random_orthogonal(dim3, dtype=None, device=None):
-    q, _ = torch.qr(torch.randn(dim3, dim3))
-    q = q.to(dtype=dtype, device=device)
+    q, _ = torch.linalg.qr(torch.randn(dim3, dim3), mode='complete')
+    q = q.to(dtype=dtype, device=device).squeeze()
     return q
 
 

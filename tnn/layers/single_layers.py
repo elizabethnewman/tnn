@@ -68,7 +68,7 @@ class AntiSymmetricLayer(nn.Module):
             init.uniform_(self.bias, -bound, bound)
 
     def forward(self, x):
-        x = F.linear(x, self.weight + self.weight.t()
+        x = F.linear(x, self.weight - self.weight.t()
                      - self.gamma * torch.eye(self.in_features, dtype=x.dtype, device=x.device), self.bias)
 
         if self.activation is not None:
