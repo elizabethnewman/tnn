@@ -66,3 +66,14 @@ def t_log_softmax(input, M, return_spatial=False):
         input_hat = modek_product(input, M.t())
 
     return input_hat
+
+
+def t_softmax(input, M, return_spatial=False):
+    input_hat = modek_product(input, M)
+
+    input_hat = F.softmax(input_hat, dim=0)
+
+    if return_spatial:
+        input_hat = modek_product(input, M.t())
+
+    return input_hat

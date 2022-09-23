@@ -5,6 +5,7 @@ from torch.optim import Optimizer
 import time
 from tnn.training import optimizer_parameters, parameters_norm
 from tnn.loss import tLoss
+from copy import deepcopy
 
 
 def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regularizer=None,
@@ -18,7 +19,11 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regul
                       ('loss', 'acc', 'loss', 'acc', 'loss', 'acc'),
                'frmt': '{:<15d}' + len(keys) * '{:<15.4e}' + '{:<15.4e}{:<15.4e}{:<15.2f}' +
                        '{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}',
-               'val': None}
+               'val': None,
+               'best_val_loss': torch.tensor(float('inf')).item(),
+               'best_val_loss_net': deepcopy(net),
+               'best_val_acc': 0.0,
+               'best_val_acc_net': deepcopy(net)}
 
     # initial evaluation
     train_out2 = test(net, criterion, train_loader)
@@ -52,6 +57,14 @@ def train(net, criterion, optimizer, scheduler, train_loader, test_loader, regul
         his += [param_norm, grad_norm, end - start]
         his += [*train_out] + [*train_out2] + [*test_out]
         results['val'] = torch.cat((results['val'], torch.tensor(his).view(1, -1)), dim=0)
+
+        if test_out[0] <= results['best_val_loss']:
+            results['best_val_loss'] = deepcopy(test_out[0])
+            results['best_val_loss_net'] = deepcopy(net)
+
+        if test_out[1] >= results['best_val_acc']:
+            results['best_val_acc'] = deepcopy(test_out[1])
+            results['best_val_acc_net'] = deepcopy(net)
 
         # print outs for training
         if verbose:
