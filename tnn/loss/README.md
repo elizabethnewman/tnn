@@ -17,7 +17,7 @@ and each tube $\vec{\mathcal{X}}_{i,1,:}$ contains nonnegative entries in the tr
 We determine the predicted class as the tube with the largest overall norm; that is,
 
 $$
-j^* = \text{argmax}_i \|\vec{\mathcal{X}}_{i,1,:}\|_F^2
+j^* = \text{argmax}_i~||\vec{\mathcal{X}}_{i,1,:}||_F^2
 $$
 
 
