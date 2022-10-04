@@ -12,12 +12,12 @@ $$
 where $\hat{\sigma}$ is the softmax function applied to each frontal slice in the transform domain.  
 We can interpret the output $\sigma(\vec{\mathcal{X}})$ as a vector of tubal probabilities;
 that is $\sum_i \vec{\mathcal{X}}(i,1,:) = \mathbf{e}$ where $\mathbf{e}$ is the identity tube 
-and each tube $\vec{\mathcal{X}}(u,1,:)}$ contains nonnegative entries in the transform domain.
+and each tube $\vec{\mathcal{X}}(i,1,:)$ contains nonnegative entries in the transform domain.
 
 We determine the predicted class as the tube with the largest overall norm; that is,
 
 $$
-i^* = \text{arg} \max_i ||\vec{\mathcal{X}(i,1,:)||_F^2
+i^* = \text{arg} \max_i ||\vec{\mathcal{X}}(i,1,:)||_F^2
 $$
 
 
