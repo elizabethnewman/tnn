@@ -17,9 +17,9 @@ class LinearLayer(nn.Module):
         self.bias = bias
         self.activation = activation
 
-        self.weight = Parameter(torch.Tensor(out_features, in_features, **factory_kwargs))
+        self.weight = Parameter(torch.empty((out_features, in_features), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(out_features, **factory_kwargs))
+            self.bias = Parameter(torch.empty(out_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -55,9 +55,9 @@ class AntiSymmetricLayer(nn.Module):
         self.gamma = gamma
         self.bias = bias
         self.activation = activation
-        self.weight = Parameter(torch.Tensor(in_features, in_features, **factory_kwargs))
+        self.weight = Parameter(torch.empty((in_features, in_features), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(in_features, **factory_kwargs))
+            self.bias = Parameter(torch.empty(in_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -95,9 +95,9 @@ class HamiltonianLayer(nn.Module):
         self.h = h
         self.activation = activation
         self.bias = bias
-        self.weight = Parameter(torch.Tensor(in_features, width, **factory_kwargs))
+        self.weight = Parameter(torch.empty((in_features, width), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(1, **factory_kwargs))
+            self.bias = Parameter(torch.empty(1, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -146,9 +146,9 @@ class ModeKLayer(nn.Module):
         self.bias = bias
         self.activation = activation
 
-        self.weight = Parameter(torch.Tensor(out_features, in_features, **factory_kwargs))
+        self.weight = Parameter(torch.empty((out_features, in_features), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(out_features, **factory_kwargs))
+            self.bias = Parameter(torch.empty(out_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
