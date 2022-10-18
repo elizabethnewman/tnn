@@ -54,5 +54,5 @@ def parameters_norm(net: torch.nn.Module):
 
         if grad_norm is None:
             grad_norm = torch.zeros(1)
-            
+
         return torch.sqrt(param_norm).item(), torch.sqrt(grad_norm).item()

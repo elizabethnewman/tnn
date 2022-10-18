@@ -9,7 +9,8 @@ from copy import deepcopy
 
 
 def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, regularizer=None,
-          max_epochs=10, verbose=True):
+          max_epochs=10, verbose=True, device=None, dtype=None):
+    factory_kwargs = {'device': device, 'dtype': dtype}
 
     keys, opt_params = optimizer_parameters(optimizer)
     param_norm, grad_norm = parameters_norm(net)
@@ -40,7 +41,7 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
     total_start = time.time()
     for epoch in range(max_epochs):
         start = time.time()
-        train_out = train_one_epoch(net, criterion, optimizer, train_loader, regularizer=regularizer)
+        train_out = train_one_epoch(net, criterion, optimizer, train_loader, regularizer=regularizer, **factory_kwargs)
         end = time.time()
 
         # get overall loss
@@ -80,7 +81,8 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
     return results
 
 
-def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None):
+def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None, device=None, dtype=None):
+    factory_kwargs = {'device': device, 'dtype': dtype}
     model.train()
     running_loss = 0
     correct = 0
@@ -90,10 +92,10 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None)
     for data, target in train_loader:
 
         optimizer.zero_grad()
-        output = model(data)
+        output = model(data.to(**factory_kwargs))
 
         if isinstance(criterion, tLoss):
-            loss, target_pred = criterion(output, target)
+            loss, target_pred = criterion(output, target.to(**factory_kwargs))
             pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
         else:
             loss = criterion(output, target)
@@ -113,7 +115,8 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None)
     return running_loss / num_samples, 100 * correct / num_samples
 
 
-def test(model: Module, criterion: Module, test_loader):
+def test(model: Module, criterion: Module, test_loader, device = None, dtype = None):
+    factory_kwargs = {'device': device, 'dtype': dtype}
     model.eval()
     test_loss = 0
     correct = 0
@@ -122,11 +125,11 @@ def test(model: Module, criterion: Module, test_loader):
     criterion.reduction = 'sum'
     with torch.no_grad():
         for data, target in test_loader:
-            output = model(data)
+            output = model(data.to(**factory_kwargs))
             num_samples += data.shape[0]
 
             if isinstance(criterion, tLoss):
-                loss, target_pred = criterion(output, target)
+                loss, target_pred = criterion(output, target.to(**factory_kwargs))
                 test_loss += loss.item()
                 pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
             else:
