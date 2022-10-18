@@ -45,8 +45,8 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
         end = time.time()
 
         # get overall loss
-        train_out2 = test(net, criterion, train_loader)
-        test_out = test(net, criterion, test_loader)
+        train_out2 = test(net, criterion, train_loader, **factory_kwargs)
+        test_out = test(net, criterion, test_loader, **factory_kwargs)
 
         # norm of network weights
         param_norm, grad_norm = parameters_norm(net)
@@ -116,7 +116,7 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
     return running_loss / num_samples, 100 * correct / num_samples
 
 
-def test(model: Module, criterion: Module, test_loader, device = None, dtype = None):
+def test(model: Module, criterion: Module, test_loader, device=None, dtype=None):
     factory_kwargs = {'device': device, 'dtype': dtype}
     model.eval()
     test_loss = 0
