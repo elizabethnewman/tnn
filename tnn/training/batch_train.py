@@ -90,15 +90,16 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
     criterion.reduction = 'mean'
 
     for data, target in train_loader:
+        data, target = data.to(**factory_kwargs), target.to(**factory_kwargs)
 
         optimizer.zero_grad()
-        output = model(data.to(**factory_kwargs))
+        output = model(data)
 
         if isinstance(criterion, tLoss):
-            loss, target_pred = criterion(output, target.to(**factory_kwargs))
+            loss, target_pred = criterion(output, target)
             pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
         else:
-            loss = criterion(output, target.to(**factory_kwargs))
+            loss = criterion(output, target)
             pred = output.argmax(dim=1, keepdim=True).squeeze()
 
         running_loss += data.shape[0] * loss.item()
@@ -125,7 +126,9 @@ def test(model: Module, criterion: Module, test_loader, device = None, dtype = N
     criterion.reduction = 'sum'
     with torch.no_grad():
         for data, target in test_loader:
-            output = model(data.to(**factory_kwargs))
+            data, target = data.to(**factory_kwargs), target.to(**factory_kwargs)
+
+            output = model(data)
             num_samples += data.shape[0]
 
             if isinstance(criterion, tLoss):
@@ -133,7 +136,7 @@ def test(model: Module, criterion: Module, test_loader, device = None, dtype = N
                 test_loss += loss.item()
                 pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
             else:
-                test_loss += criterion(output, target.to(**factory_kwargs)).item()
+                test_loss += criterion(output, target).item()
                 pred = output.argmax(dim=1, keepdim=True).squeeze()
 
             correct += pred.eq(target.view_as(pred)).sum().item()
