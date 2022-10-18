@@ -22,7 +22,7 @@ class tLinearLayer(nn.Module):
 
         self.weight = Parameter(torch.empty((out_features, in_features, dim3), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor((out_features, 1, dim3), **factory_kwargs))
+            self.bias = Parameter(torch.empty((out_features, 1, dim3), **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
