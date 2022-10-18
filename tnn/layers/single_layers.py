@@ -114,7 +114,7 @@ class HamiltonianLayer(nn.Module):
 
         # update z
         if z is None:
-            z = torch.zeros(1)
+            z = torch.zeros(1, device=x.device, dtype=x.dtype)
 
         dz = F.linear(x, self.weight.t(), self.bias)
         if self.activation is not None:

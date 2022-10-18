@@ -98,7 +98,7 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
             loss, target_pred = criterion(output, target.to(**factory_kwargs))
             pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
         else:
-            loss = criterion(output, target)
+            loss = criterion(output, target.to(**factory_kwargs))
             pred = output.argmax(dim=1, keepdim=True).squeeze()
 
         running_loss += data.shape[0] * loss.item()
@@ -133,7 +133,7 @@ def test(model: Module, criterion: Module, test_loader, device = None, dtype = N
                 test_loss += loss.item()
                 pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
             else:
-                test_loss += criterion(output, target).item()
+                test_loss += criterion(output, target.to(**factory_kwargs)).item()
                 pred = output.argmax(dim=1, keepdim=True).squeeze()
 
             correct += pred.eq(target.view_as(pred)).sum().item()
