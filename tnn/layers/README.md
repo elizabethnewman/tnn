@@ -102,20 +102,27 @@ tensor([[ 0,  4,  8],
 
 * `ModeKLayer`: a generalization of a `LinearLayer` to apply a matrix along a particular dimension of a tensor.  
 
+Here is how the layers are the same:
 ```python
 import torch
 from tnn.layers import LinearLayer, ModeKLayer
 from copy import deepcopy
 
-lay1 = LinearLayer(3, 4, bias=False)
-lay2 = ModeKLayer(3, 4, k=0, bias=False)
+lay1 = LinearLayer(3, 4, bias=True)
+lay2 = ModeKLayer(3, 4, k=1, bias=True)
 lay2.weight = deepcopy(lay1.weight)
+lay2.bias = deepcopy(lay1.bias)
 
-x = torch.randn(3, 7)
+x = torch.randn(10, 3)
 y1 = lay1(x)
 y2 = lay2(x)
 print(torch.norm(y1 - y2))
 
 ```
+```
+tensor(0., grad_fn=<CopyBackwards>)
+```
+
+
 
 
