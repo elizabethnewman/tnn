@@ -27,8 +27,8 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
                'best_val_acc_net': deepcopy(net)}
 
     # initial evaluation
-    train_out2 = test(net, criterion, train_loader)
-    test_out = test(net, criterion, test_loader)
+    train_out2 = test(net, criterion, train_loader, **factory_kwargs)
+    test_out = test(net, criterion, test_loader, **factory_kwargs)
     his = [-1] + opt_params + [param_norm, grad_norm, 0, 0, 0] + [*train_out2] + [*test_out]
     results['val'] = torch.tensor(his).view(1, -1)
 
