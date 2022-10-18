@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from copy import deepcopy
 
 
 class BlockRegularization(nn.Sequential):
@@ -13,12 +14,13 @@ class TikhonovRegularization(nn.Module):
         self.alpha = alpha
 
     def forward(self, net: nn.Module):
-        reg = None
+
+        p0 = next(iter(net.parameters()))
+        device, dtype = p0.device, p0.dtype
+
+        reg = torch.zeros(1, requires_grad=True, device=device, dtype=dtype)
         for p in net.parameters():
-            if reg is None:
-                reg = torch.norm(p) ** 2
-            else:
-                reg = reg + torch.norm(p) ** 2
+            reg = reg + torch.norm(p) ** 2
 
         return 0.5 * self.alpha * reg
 
@@ -29,22 +31,26 @@ class SmoothTimeRegularization(nn.Module):
         self.alpha = alpha
 
     def forward(self, net: nn.Module, bias=True):
-        reg = torch.zeros(1, requires_grad=True)
 
-        p_old_weight = torch.zeros(1, requires_grad=False)
+        p0 = next(iter(net.parameters()))
+        device, dtype = p0.device, p0.dtype
+
+        reg = torch.zeros(1, requires_grad=True, device=device, dtype=dtype)
+
+        p_old_weight = torch.zeros(1, requires_grad=False, device=device, dtype=dtype)
         if bias:
-            p_old_bias = torch.zeros(1, requires_grad=False)
+            p_old_bias = torch.zeros(1, requires_grad=False, device=device, dtype=dtype)
 
         for i, p in enumerate(net.parameters()):
             if bias:
                 if (i + 1) % 2:
                     reg = reg + torch.norm(p - p_old_weight)
-                    p_old_weight = p
+                    p_old_weight = deepcopy(p)
                 else:
                     reg = reg + torch.norm(p - p_old_bias)
-                    p_old_bias = p
+                    p_old_bias = deepcopy(p)
             else:
                 reg = reg + torch.norm(p - p_old_weight)
-                p_old_weight = p
+                p_old_weight = deepcopy(p)
 
         return 0.5 * self.alpha * reg
