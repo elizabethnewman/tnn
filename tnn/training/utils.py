@@ -39,7 +39,7 @@ def optimizer_parameters(optimizer):
 
 def parameters_norm(net: torch.nn.Module):
     with torch.no_grad():
-        param_norm, grad_norm = torch.zeros(1), torch.zeros(1)
+        param_norm, grad_norm = None, None
         for p in net.parameters():
             if param_norm is None:
                 param_norm = torch.sum(p.data ** 2)
@@ -52,4 +52,7 @@ def parameters_norm(net: torch.nn.Module):
                 else:
                     grad_norm += torch.sum(p.grad ** 2)
 
+        if grad_norm is None:
+            grad_norm = torch.zeros(1)
+            
         return torch.sqrt(param_norm).item(), torch.sqrt(grad_norm).item()
