@@ -4,12 +4,13 @@ from tnn.layers import ResidualLayer, AntiSymmetricResidualLayer, HamiltonianRes
 
 class ResNet(nn.Module):
 
-    def __init__(self, width, depth, h, activation=None, bias=True):
+    def __init__(self, width, depth, h, activation=None, bias=True, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(ResNet, self).__init__()
         self.width = width
         self.depth = depth
         self.h = h
-        self.layers = nn.Sequential(*[ResidualLayer(width, h=h, activation=activation, bias=bias)
+        self.layers = nn.Sequential(*[ResidualLayer(width, h=h, activation=activation, bias=bias, **factory_kwargs)
                                       for _ in range(depth)])
 
     def forward(self, x):
