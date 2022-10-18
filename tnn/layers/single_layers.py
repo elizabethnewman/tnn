@@ -14,7 +14,6 @@ class LinearLayer(nn.Module):
         super(LinearLayer, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.bias = bias
         self.activation = activation
 
         self.weight = Parameter(torch.empty((out_features, in_features), **factory_kwargs))
@@ -53,7 +52,6 @@ class AntiSymmetricLayer(nn.Module):
         super(AntiSymmetricLayer, self).__init__()
         self.in_features = in_features
         self.gamma = gamma
-        self.bias = bias
         self.activation = activation
         self.weight = Parameter(torch.empty((in_features, in_features), **factory_kwargs))
         if bias:
@@ -94,7 +92,6 @@ class HamiltonianLayer(nn.Module):
         self.width = width
         self.h = h
         self.activation = activation
-        self.bias = bias
         self.weight = Parameter(torch.empty((in_features, width), **factory_kwargs))
         if bias:
             self.bias = Parameter(torch.empty(1, **factory_kwargs))
@@ -143,7 +140,6 @@ class ModeKLayer(nn.Module):
         self.in_features = in_features
         self.out_features = out_features
         self.k = k                      # axis to which to apply the matrix
-        self.bias = bias
         self.activation = activation
 
         self.weight = Parameter(torch.empty((out_features, in_features), **factory_kwargs))
@@ -164,9 +160,11 @@ class ModeKLayer(nn.Module):
     def forward(self, x):
         x = modek_product(x, self.weight, k=self.k)
 
-        if self.bias:
+        if self.bias is not None:
             # ensure we add to the proper dimension
-            x = x + self.bias.unsqueeze((self.k + 1) % 3).unsqueeze((self.k + 2) % 3)
+            idx = x.ndim * [1]
+            idx[self.k] = -1
+            x = x + self.bias.reshape(*tuple(idx))
 
         if self.activation is not None:
             x = self.activation(x)

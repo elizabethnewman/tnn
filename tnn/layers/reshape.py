@@ -35,3 +35,17 @@ class Unfold(nn.Module):
             x = x.permute(0, 2, 1).contiguous()
 
             return x.view(-1, x.shape[-1])
+
+
+class Fold(nn.Module):
+    """
+    Unfold a tensor such that columns are vectorized lateral slices
+    """
+    def __init__(self, shape_out):
+        super(Fold, self).__init__()
+        self.shape_out = shape_out  # shape of original tensor
+
+    def forward(self, x):
+
+        x = x.view(self.shape_out[1], self.shape_out[2], self.shape_out[1])
+        return x.permute(0, 2, 1).contiguous()
