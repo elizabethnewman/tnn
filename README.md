@@ -49,10 +49,14 @@ from tnn.utils import seed_everything, number_network_weights
 # seed for reproducibility
 seed_everything(1234)
 
+# get device
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 # form network
 net = torch.nn.Sequential(View((-1, 784)), 
                           FullyConnected([784, 20, 10], activation=torch.nn.Tanh())
-                          )
+                          ).to(device)
+                          
 print('number of network weights:', number_network_weights(net))                       
                           
 # choose loss function
@@ -62,7 +66,7 @@ loss = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(net.parameters())
                     
 # train!
-results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True)
+results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True, device=device)
 ```
 
 If we want to train a tNN, we can use nearly identical code!
@@ -77,14 +81,18 @@ from tnn.utils import seed_everything, number_network_weights
 # seed for reproducibility
 seed_everything(1234)
 
+# get device
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 # create transformation matrix
 dim3 = 28
-M = dct_matrix(dim3, dtype=torch.float32)
+M = dct_matrix(dim3, dtype=torch.float32, device=device)
 
 # form network
 net = torch.nn.Sequential(Permute(), 
                           tFullyConnected((28, 20, 10), dim3, M=M, activation=torch.nn.Tanh())
-                          )
+                          ).to(device)
+                          
 print('number of network weights:', number_network_weights(net))                       
                           
 # choose loss function
@@ -94,6 +102,6 @@ loss = tCrossEntropyLoss(M=M)
 optimizer = torch.optim.Adam(net.parameters())
                     
 # train!
-results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True)
+results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True, device=device)
 ```
 
