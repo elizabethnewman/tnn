@@ -13,9 +13,12 @@ class TikhonovRegularization(nn.Module):
         self.alpha = alpha
 
     def forward(self, net: nn.Module):
-        reg = torch.zeros(1, requires_grad=True)
+        reg = None
         for p in net.parameters():
-            reg = reg + torch.norm(p) ** 2
+            if reg is None:
+                reg = torch.norm(p) ** 2
+            else:
+                reg = reg + torch.norm(p) ** 2
 
         return 0.5 * self.alpha * reg
 

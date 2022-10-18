@@ -4,20 +4,22 @@ import torch.nn.functional as F
 import torch.nn.init as init
 from torch.nn.parameter import Parameter
 import math
+from tnn.tensor_utils import modek_product
 
 
 class LinearLayer(nn.Module):
 
-    def __init__(self, in_features, out_features, bias=True, activation=None):
+    def __init__(self, in_features, out_features, bias=True, activation=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(LinearLayer, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.bias = bias
         self.activation = activation
 
-        self.weight = Parameter(torch.Tensor(out_features, in_features))
+        self.weight = Parameter(torch.Tensor(out_features, in_features, **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(out_features))
+            self.bias = Parameter(torch.Tensor(out_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -46,15 +48,16 @@ class LinearLayer(nn.Module):
 
 class AntiSymmetricLayer(nn.Module):
 
-    def __init__(self, in_features, bias=True, gamma=1e-4, activation=None):
+    def __init__(self, in_features, bias=True, gamma=1e-4, activation=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(AntiSymmetricLayer, self).__init__()
         self.in_features = in_features
         self.gamma = gamma
         self.bias = bias
         self.activation = activation
-        self.weight = Parameter(torch.Tensor(in_features, in_features))
+        self.weight = Parameter(torch.Tensor(in_features, in_features, **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(in_features))
+            self.bias = Parameter(torch.Tensor(in_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -84,16 +87,17 @@ class AntiSymmetricLayer(nn.Module):
 
 class HamiltonianLayer(nn.Module):
 
-    def __init__(self, in_features, width, h=1.0, activation=None, bias=True):
+    def __init__(self, in_features, width, h=1.0, activation=None, bias=True, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(HamiltonianLayer, self).__init__()
         self.in_features = in_features
         self.width = width
         self.h = h
         self.activation = activation
         self.bias = bias
-        self.weight = Parameter(torch.Tensor(in_features, width))
+        self.weight = Parameter(torch.Tensor(in_features, width, **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(1))
+            self.bias = Parameter(torch.Tensor(1, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -129,3 +133,48 @@ class HamiltonianLayer(nn.Module):
         return 'in_features={}, width={}, bias={}'.format(
             self.in_features, self.width, self.bias is not None
         )
+
+
+class ModeKLayer(nn.Module):
+
+    def __init__(self, in_features, out_features, k, bias=True, activation=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
+        super(ModeKLayer, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.k = k                      # axis to which to apply the matrix
+        self.bias = bias
+        self.activation = activation
+
+        self.weight = Parameter(torch.Tensor(out_features, in_features, **factory_kwargs))
+        if bias:
+            self.bias = Parameter(torch.Tensor(out_features, **factory_kwargs))
+        else:
+            self.register_parameter('bias', None)
+
+        self.reset_parameters()
+
+    def reset_parameters(self) -> None:
+        init.kaiming_uniform_(self.weight, a=math.sqrt(5))
+        if self.bias is not None:
+            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / math.sqrt(fan_in)
+            init.uniform_(self.bias, -bound, bound)
+
+    def forward(self, x):
+        x = modek_product(x, self.weight, k=self.k)
+
+        if self.bias:
+            # ensure we add to the proper dimension
+            x = x + self.bias.unsqueeze((self.k + 1) % 3).unsqueeze((self.k + 2) % 3)
+
+        if self.activation is not None:
+            x = self.activation(x)
+
+        return x
+
+    def extra_repr(self) -> str:
+        return 'in_features={}, out_features={}, bias={}'.format(
+            self.in_features, self.out_features, self.bias is not None
+        )
+
