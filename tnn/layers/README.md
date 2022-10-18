@@ -123,6 +123,22 @@ print(torch.norm(y1 - y2))
 tensor(0., grad_fn=<CopyBackwards>)
 ```
 
+We can also use this layer for tensor contraction
+```python
+import torch
+from tnn.layers import ModeKLayer
 
+lay = ModeKLayer(3, 1, k=2, bias=True)
+
+x = torch.randn(4, 10, 3)
+print(x.shape)
+
+y = lay(x)
+print(y.shape)
+```
+```
+torch.Size([4, 10, 3])
+torch.Size([4, 10, 1])
+```
 
 
