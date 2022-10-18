@@ -59,4 +59,3 @@ class tHamiltonianResNet(nn.Module):
         for layer in self.layers:
             x, z = layer(x, z, M=self.M)
         return x
-    
