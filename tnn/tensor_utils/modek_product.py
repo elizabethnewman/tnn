@@ -20,27 +20,30 @@ def modek_product(A, M, k=None, transpose=False, conjugate=False, inverse=False)
     :rtype:
     """
 
-    if k is None:
-        k = A.ndim - 1
-
-    assert A.shape[k] == M.shape[1]
-
-    # apply M to tubes of A (note that the transpose is reversed because we apply M on the right)
-    if transpose or inverse:
-        if inverse:
-            A_hat = torch.moveaxis(torch.linalg.solve(M, torch.moveaxis(A, k, -2)), -2, -1)
-        else:
-            if conjugate:
-                A_hat = torch.moveaxis(A, k, -1) @ torch.conj(M)
-            else:
-                A_hat = torch.moveaxis(A, k, -1) @ M
+    if M is None:
+        return A
     else:
-        A_hat = torch.moveaxis(A, k, -1) @ M.T
+        if k is None:
+            k = A.ndim - 1
 
-    # return to original orientation
-    A_hat = torch.moveaxis(A_hat, -1, k)
+        assert A.shape[k] == M.shape[1]
 
-    return A_hat
+        # apply M to tubes of A (note that the transpose is reversed because we apply M on the right)
+        if transpose or inverse:
+            if inverse:
+                A_hat = torch.moveaxis(torch.linalg.solve(M, torch.moveaxis(A, k, -2)), -2, -1)
+            else:
+                if conjugate:
+                    A_hat = torch.moveaxis(A, k, -1) @ torch.conj(M)
+                else:
+                    A_hat = torch.moveaxis(A, k, -1) @ M
+        else:
+            A_hat = torch.moveaxis(A, k, -1) @ M.T
+
+        # return to original orientation
+        A_hat = torch.moveaxis(A_hat, -1, k)
+
+        return A_hat
 
 
 def modek_unfold(A, k):

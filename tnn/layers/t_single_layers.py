@@ -9,7 +9,8 @@ from tnn.tensor_utils import mprod, mtran, t_eye
 
 class tLinearLayer(nn.Module):
     # only supports third-order tensors currently
-    def __init__(self, in_features, out_features, dim3, bias=True, activation=None, M=None):
+    def __init__(self, in_features, out_features, dim3, bias=True, activation=None, M=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(tLinearLayer, self).__init__()
 
         self.in_features = in_features
@@ -19,9 +20,9 @@ class tLinearLayer(nn.Module):
         self.bias = bias
         self.activation = activation
 
-        self.weight = Parameter(torch.Tensor(out_features, in_features, dim3))
+        self.weight = Parameter(torch.empty((out_features, in_features, dim3), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(out_features, 1, dim3))
+            self.bias = Parameter(torch.Tensor((out_features, 1, dim3), **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -54,7 +55,8 @@ class tLinearLayer(nn.Module):
 
 class tAntiSymmetricLayer(nn.Module):
     # only supports third-order tensors currently
-    def __init__(self, in_features, dim3, bias=True, gamma=1e-4, activation=None, M=None):
+    def __init__(self, in_features, dim3, bias=True, gamma=1e-4, activation=None, M=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(tAntiSymmetricLayer, self).__init__()
 
         self.in_features = in_features
@@ -64,9 +66,9 @@ class tAntiSymmetricLayer(nn.Module):
         self.gamma = gamma
         self.activation = activation
 
-        self.weight = Parameter(torch.Tensor(in_features, in_features, dim3))
+        self.weight = Parameter(torch.empty((in_features, in_features, dim3), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(in_features, 1, dim3))
+            self.bias = Parameter(torch.empty((in_features, 1, dim3), **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
@@ -99,7 +101,8 @@ class tAntiSymmetricLayer(nn.Module):
 
 class tHamiltonianLayer(nn.Module):
 
-    def __init__(self, in_features, width, dim3, bias=True, h=1.0, activation=None, M=None):
+    def __init__(self, in_features, width, dim3, bias=True, h=1.0, activation=None, M=None, device=None, dtype=None):
+        factory_kwargs = {'device': device, 'dtype': dtype}
         super(tHamiltonianLayer, self).__init__()
         self.in_features = in_features
         self.width = width
@@ -109,9 +112,9 @@ class tHamiltonianLayer(nn.Module):
         self.activation = activation
         self.bias = bias
 
-        self.weight = Parameter(torch.Tensor(in_features, width, dim3))
+        self.weight = Parameter(torch.empty((in_features, width, dim3), **factory_kwargs))
         if bias:
-            self.bias = Parameter(torch.Tensor(1, 1, dim3))
+            self.bias = Parameter(torch.empty((1, 1, dim3), **factory_kwargs))
         else:
             self.register_parameter('bias', None)
 
