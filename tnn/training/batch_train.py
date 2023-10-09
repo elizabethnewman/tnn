@@ -24,7 +24,7 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
                'best_val_loss': torch.tensor(float('inf')).item(),
                'best_val_loss_net': deepcopy(net),
                'best_val_acc': 0.0,
-               'best_val_acc_net': deepcopy(net)}
+               'best_val_acc_net': deepcopy(net), 'total_time': 0}
 
     # initial evaluation
     train_out2 = test(net, criterion, train_loader, **factory_kwargs)
@@ -77,6 +77,7 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
 
     total_end = time.time()
     print('Total training time = ', total_end - total_start)
+    results['total_time'] = total_end - total_start
 
     return results
 
