@@ -29,7 +29,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
                           LinearLayer(32 * 32 * 3, args.width, activation=torch.nn.Tanh()),
                           HamiltonianResNet(args.width, width=args.width + 10,
-                                            depth=args.depth, h=args.h, activation=torch.nn.Tanh()),
+                                            depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                           LinearLayer(args.width, 10, activation=torch.nn.Tanh()),
                           ).to(device)
 
