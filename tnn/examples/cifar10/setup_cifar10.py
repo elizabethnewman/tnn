@@ -45,6 +45,6 @@ def setup_parser():
     parser.add_argument('--step_size', type=float, default=100, help='step size for scheduler')
     parser.add_argument('--width', type=int, default=100, help='width of network')
     parser.add_argument('--depth', type=int, default=1, help='depth of network')
-    parser.add_argument('--h', type=int, default=1, help='number of steps in Hamiltonian')
+    parser.add_argument('--h_step', type=int, default=1, help='number of steps in Hamiltonian')
     parser.add_argument('--alpha', type=float, default=0.0, help='regularization parameter')
     return parser
