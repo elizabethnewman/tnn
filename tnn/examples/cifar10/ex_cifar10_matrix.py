@@ -6,7 +6,6 @@ from tnn.training.batch_train import train
 from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs
 import os
 import datetime
-import argparse
 import time
 from copy import deepcopy
 import pickle
@@ -72,7 +71,7 @@ logger.info("--------------------------------------------------\n")
 # train!
 t0 = time.perf_counter()
 results = train(net, loss, optimizer, train_loader, val_loader, test_loader, max_epochs=args.max_epochs,
-                scheduler=scheduler, regularizer=None, device=device, logger=logger)
+                scheduler=scheduler, regularizer=regularizer, device=device, logger=logger)
 t1 = time.perf_counter()
 
 
