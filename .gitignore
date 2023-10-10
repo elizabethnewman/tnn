@@ -131,3 +131,23 @@ dmypy.json
 .idea/
 
 tnn/examples/minst/data/*
+*.meta
+tnn/examples/cifar10/data/cifar-10-batches-py/data_batch_1
+tnn/examples/cifar10/data/cifar-10-batches-py/data_batch_2
+tnn/examples/mnist/data/MNIST/raw/train-images-idx3-ubyte.gz
+*.gz
+tnn/examples/mnist/data/MNIST/raw/train-labels-idx1-ubyte
+tnn/examples/cifar10/data/cifar-10-batches-py/data_batch_3
+tnn/examples/cifar10/data/cifar-10-batches-py/data_batch_4
+tnn/examples/cifar10/data/cifar-10-batches-py/data_batch_5
+tnn/examples/cifar10/data/cifar-10-batches-py/readme.html
+tnn/examples/cifar10/data/cifar-10-batches-py/test_batch
+tnn/examples/cifar10/experiments/matrix/.DS_Store
+tnn/examples/mnist/data/MNIST/raw/t10k-images-idx3-ubyte
+tnn/examples/mnist/data/MNIST/raw/t10k-labels-idx1-ubyte
+tnn/examples/mnist/data/MNIST/raw/train-images-idx3-ubyte
+tnn/examples/mnist/experiments/.DS_Store
+tnn/examples/mnist/experiments/matrix/.DS_Store
+tnn/examples/mnist/experiments/matrix/2023_10_10_11_37_46/results.pkl
+tnn/examples/mnist/experiments/tensor/.DS_Store
+tnn/examples/mnist/experiments/tensor/2023_10_10_11_38_10/results.pkl
