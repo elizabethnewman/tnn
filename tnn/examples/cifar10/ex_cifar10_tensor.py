@@ -52,7 +52,7 @@ print('number of network weights:', number_network_weights(net))
 loss = tCrossEntropyLoss(M=M)
 
 # choose optimizer
-optimizer = torch.optim.Adam(net.parameters(), lr=1e-3, weight_decay=1e-6)
+optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
 regularizer = BlockRegularization((None, None, TikhonovRegularization(alpha=args.alpha),
                                   SmoothTimeRegularization(alpha=args.alpha),
