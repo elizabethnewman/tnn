@@ -8,14 +8,14 @@ from tnn.loss import tLoss
 from copy import deepcopy
 
 
-def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, regularizer=None,
-          max_epochs=10, verbose=True, device=None, dtype=None):
+def train(net, criterion, optimizer, train_loader, val_loader, test_loader, scheduler=None, regularizer=None,
+          max_epochs=10, device=None, dtype=None, logger=None):
     factory_kwargs = {'device': device, 'dtype': dtype}
 
     keys, opt_params = optimizer_parameters(optimizer)
     param_norm, grad_norm = parameters_norm(net)
 
-    results = {'headers': ('',) * (4 + len(keys)) + ('running', '') + ('train', '') + ('test', ''),
+    results = {'headers': ('',) * (4 + len(keys)) + ('running', '') + ('train', '') + ('valid', ''),
                'str': ('epoch',) + keys + ('|params|', '|grad|', 'time') +
                       ('loss', 'acc', 'loss', 'acc', 'loss', 'acc'),
                'frmt': '{:<15d}' + len(keys) * '{:<15.4e}' + '{:<15.4e}{:<15.4e}{:<15.2f}' +
@@ -24,7 +24,8 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
                'best_val_loss': torch.tensor(float('inf')).item(),
                'best_val_loss_net': deepcopy(net),
                'best_val_acc': 0.0,
-               'best_val_acc_net': deepcopy(net)}
+               'best_val_acc_net': deepcopy(net),
+               'total_time': 0.0}
 
     # initial evaluation
     train_out2 = test(net, criterion, train_loader, **factory_kwargs)
@@ -32,11 +33,11 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
     his = [-1] + opt_params + [param_norm, grad_norm, 0, 0, 0] + [*train_out2] + [*test_out]
     results['val'] = torch.tensor(his).view(1, -1)
 
-    # print outs for training
-    if verbose:
-        print((len(results['str']) * '{:<15s}').format(*results['headers']))
-        print((len(results['str']) * '{:<15s}').format(*results['str']))
-        print(results['frmt'].format(*his))
+    # store printouts for training
+    if logger is not None:
+        logger.info((len(results['headers']) * '{:<15s}').format(*results['headers']))
+        logger.info((len(results['str']) * '{:<15s}').format(*results['str']))
+        logger.info(results['frmt'].format(*his))
 
     total_start = time.time()
     for epoch in range(max_epochs):
@@ -46,7 +47,7 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
 
         # get overall loss
         train_out2 = test(net, criterion, train_loader, **factory_kwargs)
-        test_out = test(net, criterion, test_loader, **factory_kwargs)
+        val_out = test(net, criterion, val_loader, **factory_kwargs)
 
         # norm of network weights
         param_norm, grad_norm = parameters_norm(net)
@@ -56,7 +57,7 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
         _, opt_params = optimizer_parameters(optimizer)
         his += opt_params
         his += [param_norm, grad_norm, end - start]
-        his += [*train_out] + [*train_out2] + [*test_out]
+        his += [*train_out] + [*train_out2] + [*val_out]
         results['val'] = torch.cat((results['val'], torch.tensor(his).view(1, -1)), dim=0)
 
         if test_out[0] <= results['best_val_loss']:
@@ -68,15 +69,21 @@ def train(net, criterion, optimizer, train_loader, test_loader, scheduler=None, 
             results['best_val_acc_net'] = deepcopy(net)
 
         # print outs for training
-        if verbose:
-            print(results['frmt'].format(*his))
+        if logger is not None:
+            logger.info(results['frmt'].format(*his))
 
         # update learning rate
         if scheduler is not None:
             scheduler.step()
 
     total_end = time.time()
-    print('Total training time = ', total_end - total_start)
+    results['total_time'] = total_end - total_start
+
+    # performance on test data
+    test_out = test(net, criterion, test_loader, **factory_kwargs)
+    logger.info('Test performance:')
+    logger.info('loss = {:<15.4e}'.format(test_out[0]))
+    logger.info('accuracy = {:<15.4f}'.format(test_out[1]))
 
     return results
 

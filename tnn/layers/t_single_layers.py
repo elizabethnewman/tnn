@@ -17,7 +17,6 @@ class tLinearLayer(nn.Module):
         self.dim3 = dim3
         self.M = M
         self.out_features = out_features
-        self.bias = bias
         self.activation = activation
 
         self.weight = Parameter(torch.empty((out_features, in_features, dim3), **factory_kwargs))
