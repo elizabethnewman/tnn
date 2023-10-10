@@ -3,9 +3,19 @@ import torch.nn as nn
 from copy import deepcopy
 
 
-class BlockRegularization(nn.Sequential):
+class BlockRegularization(nn.Module):
     def __init__(self, args):
-        super(BlockRegularization, self).__init__(*args)
+        super(BlockRegularization, self).__init__()
+        self.regs = []
+        for a in args:
+            self.regs.append(a)
+
+    def forward(self, net: nn.Sequential):
+        reg = 0.0
+        for i, layer in enumerate(net):
+            if self.regs[i] is not None:
+                reg = reg + self.regs[i](layer)
+        return reg
 
 
 class TikhonovRegularization(nn.Module):
