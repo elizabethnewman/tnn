@@ -16,6 +16,9 @@ from utils import matrix_match_tensor_single_layer
 parser = setup_parser()
 args = parser.parse_args()
 
+args.matrix_match_tensor = True
+args.width = 13
+args.loss = 't_cross_entropy'
 # seed for reproducibility
 seed_everything(args.seed)
 
@@ -83,7 +86,7 @@ if torch.cuda.is_available():
 
 logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 
-results['last_net'] = deepcopy(net)
+results['last_net'] = deepcopy(net.cpu())
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
 

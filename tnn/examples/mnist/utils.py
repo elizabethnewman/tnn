@@ -1,6 +1,7 @@
 
 import math
 
+
 def matrix_match_tensor_single_layer(width, loss='t_cross_entropy'):
     W, H, n_classes = 28, 28, 10
     if loss == 'cross_entropy':

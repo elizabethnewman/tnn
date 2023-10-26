@@ -112,6 +112,6 @@ if torch.cuda.is_available():
 
 logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 
-results['last_net'] = deepcopy(net)
+results['last_net'] = deepcopy(net.cpu())
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
