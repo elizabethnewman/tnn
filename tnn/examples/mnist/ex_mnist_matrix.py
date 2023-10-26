@@ -10,7 +10,7 @@ import time
 from copy import deepcopy
 import pickle
 from setup_mnist import setup_mnist, setup_parser
-from tnn.examples.mnist.utils import matrix_match_tensor_single_layer
+from .utils import matrix_match_tensor_single_layer
 
 # setup parser
 parser = setup_parser()
