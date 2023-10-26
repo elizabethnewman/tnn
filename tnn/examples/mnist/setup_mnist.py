@@ -44,9 +44,10 @@ def setup_parser():
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate')
     parser.add_argument('--gamma', type=float, default=1, help='decay rate for scheduler')
     parser.add_argument('--step_size', type=float, default=100, help='step size for scheduler')
-    parser.add_argument('--width', type=int, default=10, help='width of network')
+    parser.add_argument('--width', type=int, default=0, help='width of network')
     parser.add_argument('--loss', type=str, default='t_cross_entropy',
                         help='loss function for tensor network (t_cross_entropy or cross_entropy)')
     parser.add_argument('--bias', type=bool, default=True, help='bias for network')
-    parser.add_argument('--matrix_match_tensor', action='store_true', help='match number of matrix weights to tensor based on width')
+    parser.add_argument('--matrix_match_tensor', action='store_true',
+                        help='match number of matrix weights to tensor based on width')
     return parser

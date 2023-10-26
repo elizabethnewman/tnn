@@ -48,19 +48,30 @@ else:
     M = torch.eye(dim3, dtype=torch.float32, device=device)
 
 # form network and choose loss
-if args.loss == 't_cross_entropy':
+if args.width == 0:
     net = torch.nn.Sequential(Permute((1, 0, 2)),
-                              tFullyConnected((28, args.width), dim3, M=M, activation=None, bias=args.bias),
+                              tFullyConnected((28, 10), dim3, M=M, activation=None, bias=args.bias),
                               ).to(device)
     loss = tCrossEntropyLoss(M=M)
 else:
-    net = torch.nn.Sequential(Permute((1, 0, 2)),
-                              tFullyConnected((28, args.width), dim3, M=M, activation=None, bias=args.bias),
-                              Permute((1, 0, 2)),
-                              View((-1, args.width * dim3)),
-                              LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
-                              ).to(device)
-    loss = torch.nn.CrossEntropyLoss()
+    if args.loss == 't_cross_entropy':
+        net = torch.nn.Sequential(Permute((1, 0, 2)),
+                                  tFullyConnected((28, args.width), dim3, M=M,
+                                                  activation=torch.nn.Tanh(), bias=args.bias),
+                                  tFullyConnected((args.width, 10), dim3, M=M,
+                                                  activation=None, bias=args.bias),
+                                  ).to(device)
+        loss = tCrossEntropyLoss(M=M)
+
+    else:
+        net = torch.nn.Sequential(Permute((1, 0, 2)),
+                                  tFullyConnected((28, args.width), dim3, M=M,
+                                                  activation=torch.nn.Tanh(), bias=args.bias),
+                                  Permute((1, 0, 2)),
+                                  View((-1, args.width * dim3)),
+                                  LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
+                                  ).to(device)
+        loss = torch.nn.CrossEntropyLoss()
 
 # choose optimizer
 optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)

@@ -1,6 +1,6 @@
 import torch
 from tnn.layers import View
-from tnn.networks import FullyConnected
+from tnn.layers import LinearLayer
 from tnn.training.batch_train import train
 from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs
 import os
@@ -10,7 +10,7 @@ import time
 from copy import deepcopy
 import pickle
 from setup_mnist import setup_mnist, setup_parser
-import math
+from tnn.examples.mnist.utils import matrix_match_tensor_single_layer
 
 # setup parser
 parser = setup_parser()
@@ -26,17 +26,18 @@ train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, ar
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # form network
-if args.width > 0:
-    w = args.width
-    if args.matrix_match_tensor:
-        w = math.ceil(1092 * w / 795)
-        
+if args.width == 0:
     net = torch.nn.Sequential(View((-1, 784)),
-                              FullyConnected([784, w, 10], activation=None, bias=args.bias)
+                              LinearLayer(784, 10, activation=None, bias=args.bias)
                               ).to(device)
 else:
+    w = args.width
+    if args.matrix_match_tensor:
+        w = matrix_match_tensor_single_layer(args.width, args.loss)
+
     net = torch.nn.Sequential(View((-1, 784)),
-                              FullyConnected([784, 10], activation=None, bias=args.bias)
+                              LinearLayer(784, w, activation=torch.nn.Tanh(), bias=args.bias),
+                              LinearLayer(w, 10, activation=None, bias=args.bias),
                               ).to(device)
 
 
