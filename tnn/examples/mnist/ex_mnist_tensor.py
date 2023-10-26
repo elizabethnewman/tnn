@@ -29,11 +29,21 @@ train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, ar
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # create transformation matrix
+args.M = 'data'
 dim3 = 28
 if args.M == 'dct':
     M = dct_matrix(dim3, dtype=torch.float32, device=device)
 elif args.M == 'random':
     M = random_orthogonal(dim3, dtype=torch.float32, device=device)
+elif args.M == 'data':
+    # compute left singular vectors of mode-3 unfolding of data
+    A = torch.empty(0)
+    for data in train_loader:
+        A = torch.cat((A, data[0]), dim=0)
+    A = A.reshape(-1, A.shape[-1]).T
+    M, _, _ = torch.linalg.svd(A, full_matrices=False)
+    M = M.T.to(dtype=torch.float32, device=device)
+    del A
 else:
     M = torch.eye(dim3, dtype=torch.float32, device=device)
 
