@@ -10,6 +10,7 @@ import time
 from copy import deepcopy
 import pickle
 from setup_mnist import setup_mnist, setup_parser
+import math
 
 # setup parser
 parser = setup_parser()
@@ -25,9 +26,18 @@ train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, ar
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # form network
-net = torch.nn.Sequential(View((-1, 784)),
-                          FullyConnected([784, 10], activation=None, bias=args.bias)
-                          ).to(device)
+if args.width > 0:
+    w = args.width
+    if args.matrix_match_tensor:
+        w = math.ceil(1092 * w / 795)
+        
+    net = torch.nn.Sequential(View((-1, 784)),
+                              FullyConnected([784, w, 10], activation=None, bias=args.bias)
+                              ).to(device)
+else:
+    net = torch.nn.Sequential(View((-1, 784)),
+                              FullyConnected([784, 10], activation=None, bias=args.bias)
+                              ).to(device)
 
 
 # choose loss function
