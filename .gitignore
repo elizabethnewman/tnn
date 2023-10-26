@@ -151,3 +151,4 @@ tnn/examples/mnist/experiments/matrix/.DS_Store
 tnn/examples/mnist/experiments/matrix/2023_10_10_11_37_46/results.pkl
 tnn/examples/mnist/experiments/tensor/.DS_Store
 tnn/examples/mnist/experiments/tensor/2023_10_10_11_38_10/results.pkl
+*.pkl

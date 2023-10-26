@@ -26,7 +26,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # form network
 net = torch.nn.Sequential(View((-1, 784)),
-                          FullyConnected([784, 10], activation=None, bias=False)
+                          FullyConnected([784, 10], activation=None, bias=args.bias)
                           ).to(device)
 
 
