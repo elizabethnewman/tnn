@@ -14,6 +14,7 @@ from copy import deepcopy
 import pickle
 from tnn.examples.mnist.setup_mnist import setup_mnist
 from tnn.examples.utils import setup_parser
+import pandas as pd
 
 
 # setup parser
@@ -117,3 +118,4 @@ logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 results['last_net'] = deepcopy(net.cpu())
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
+pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))
