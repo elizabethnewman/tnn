@@ -47,4 +47,5 @@ def setup_parser():
     parser.add_argument('--depth', type=int, default=4, help='depth of network')
     parser.add_argument('--h_step', type=float, default=0.1, help='number of steps in Hamiltonian')
     parser.add_argument('--alpha', type=float, default=0.0, help='regularization parameter')
+    parser.add_argument('--add_width_hamiltonian', type=int, default=0, help='additional width of Hamiltonian network')
     return parser

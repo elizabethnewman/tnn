@@ -41,8 +41,8 @@ w = 30
 net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
                           Permute((1, 0, 2)),
                           tLinearLayer(32 * 3, args.width, dim3, M=M, activation=torch.nn.Tanh()),
-                          tHamiltonianResNet(args.width, args.width + 10, dim3, M, depth=args.depth, h=args.h_step,
-                                             activation=torch.nn.Tanh()),
+                          tHamiltonianResNet(args.width, args.width + args.add_width_hamiltonian, dim3, M,
+                                             depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                           tLinearLayer(args.width, 10, dim3, M=M, activation=torch.nn.Tanh()),
                           ).to(device)
 
