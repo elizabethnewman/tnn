@@ -31,14 +31,14 @@ if args.opening_layer:
                               LinearLayer(32 * 32 * 3, args.width, activation=torch.nn.Tanh()),
                               HamiltonianResNet(args.width, width=args.width + args.add_width_hamiltonian,
                                                 depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
-                              LinearLayer(args.width, 10, activation=torch.nn.Tanh()),
+                              LinearLayer(args.width, 10, activation=None)
                               ).to(device)
 else:
     w = 32 * 32 * 3
     net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
                               HamiltonianResNet(w, width=w + args.add_width_hamiltonian,
                                                 depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
-                              LinearLayer(w, 10, activation=torch.nn.Tanh()),
+                              LinearLayer(w, 10, activation=None)
                               ).to(device)
 
 

@@ -1,6 +1,6 @@
 import torch
-from tnn.layers import View, Permute, tLinearLayer
-from tnn.networks import tFullyConnected, tHamiltonianResNet
+from tnn.layers import View, Permute, tLinearLayer, LinearLayer
+from tnn.networks import tHamiltonianResNet
 from tnn.loss import tCrossEntropyLoss
 from tnn.regularization import SmoothTimeRegularization, TikhonovRegularization, BlockRegularization
 from tnn.training.batch_train import train
@@ -38,21 +38,45 @@ else:
 
 # form network
 if args.opening_layer:
-    net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
-                              Permute((1, 0, 2)),
-                              tLinearLayer(32 * 3, args.width, dim3, M=M, activation=torch.nn.Tanh()),
-                              tHamiltonianResNet(args.width, args.width + args.add_width_hamiltonian, dim3, M,
-                                                 depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
-                              tLinearLayer(args.width, 10, dim3, M=M, activation=torch.nn.Tanh()),
-                              ).to(device)
+    if args.loss == 't_cross_entropy':
+        net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
+                                  Permute((1, 0, 2)),
+                                  tLinearLayer(32 * 3, args.width, dim3, M=M, activation=torch.nn.Tanh()),
+                                  tHamiltonianResNet(args.width, args.width + args.add_width_hamiltonian, dim3, M,
+                                                     depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                                  tLinearLayer(args.width, 10, dim3, M=M, activation=None)
+                                  ).to(device)
+    else:
+        net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
+                                  Permute((1, 0, 2)),
+                                  tLinearLayer(32 * 3, args.width, dim3, M=M, activation=torch.nn.Tanh()),
+                                  tHamiltonianResNet(args.width, args.width + args.add_width_hamiltonian, dim3, M,
+                                                     depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                                  Permute((1, 0, 2)),
+                                  View((-1, args.width * dim3)),
+                                  LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
+                                  ).to(device)
+
 else:
     w = 32 * 3
-    net = torch.nn.Sequential(View((-1, w, 32)),
-                              Permute((1, 0, 2)),
-                              tHamiltonianResNet(w, w + args.add_width_hamiltonian, dim3, M,
-                                                 depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
-                              tLinearLayer(w, 10, dim3, M=M, activation=torch.nn.Tanh()),
-                              ).to(device)
+
+    if args.loss == 't_cross_entropy':
+        net = torch.nn.Sequential(View((-1, w, 32)),
+                                  Permute((1, 0, 2)),
+                                  tHamiltonianResNet(w, w + args.add_width_hamiltonian, dim3, M,
+                                                     depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                                  tLinearLayer(w, 10, dim3, M=M, activation=None)
+                                  ).to(device)
+    else:
+        net = torch.nn.Sequential(View((-1, w, 32)),
+                                  Permute((1, 0, 2)),
+                                  tHamiltonianResNet(w, w + args.add_width_hamiltonian, dim3, M,
+                                                     depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                                  Permute((1, 0, 2)),
+                                  View((-1, args.width * dim3)),
+                                  LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
+                                  ).to(device)
+
 
 # choose loss function
 loss = tCrossEntropyLoss(M=M)
