@@ -26,12 +26,20 @@ train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # form network
-net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
-                          LinearLayer(32 * 32 * 3, args.width, activation=torch.nn.Tanh()),
-                          HamiltonianResNet(args.width, width=args.width + args.add_width_hamiltonian,
-                                            depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
-                          LinearLayer(args.width, 10, activation=torch.nn.Tanh()),
-                          ).to(device)
+if args.opening_layer:
+    net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
+                              LinearLayer(32 * 32 * 3, args.width, activation=torch.nn.Tanh()),
+                              HamiltonianResNet(args.width, width=args.width + args.add_width_hamiltonian,
+                                                depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                              LinearLayer(args.width, 10, activation=torch.nn.Tanh()),
+                              ).to(device)
+else:
+    w = 32 * 32 * 3
+    net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
+                              HamiltonianResNet(w, width=w + args.add_width_hamiltonian,
+                                                depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
+                              LinearLayer(w, 10, activation=torch.nn.Tanh()),
+                              ).to(device)
 
 
 # choose loss function
