@@ -9,7 +9,9 @@ import datetime
 import time
 from copy import deepcopy
 import pickle
-from setup_cifar10 import setup_cifar10, setup_parser
+from tnn.examples.cifar10.setup_cifar10 import setup_cifar10
+from tnn.examples.utils import setup_parser
+
 
 # setup parser
 parser = setup_parser()
@@ -19,7 +21,8 @@ args = parser.parse_args()
 seed_everything(args.seed)
 
 # setup data
-train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, args.n_test, args.batch_size)
+train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, args.n_test, args.batch_size,
+                                                      args.data_dir)
 
 
 # get device

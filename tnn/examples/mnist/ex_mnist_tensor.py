@@ -12,7 +12,8 @@ import argparse
 import time
 from copy import deepcopy
 import pickle
-from setup_mnist import setup_mnist, setup_parser
+from tnn.examples.mnist.setup_mnist import setup_mnist
+from tnn.examples.utils import setup_parser
 
 
 # setup parser
@@ -23,7 +24,8 @@ args = parser.parse_args()
 seed_everything(args.seed)
 
 # setup data
-train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, args.n_test, args.batch_size)
+train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, args.n_test, args.batch_size,
+                                                    args.data_dir)
 
 # get device
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

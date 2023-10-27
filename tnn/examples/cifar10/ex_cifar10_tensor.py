@@ -11,7 +11,8 @@ import datetime
 import time
 from copy import deepcopy
 import pickle
-from setup_cifar10 import setup_cifar10, setup_parser
+from tnn.examples.cifar10.setup_cifar10 import setup_cifar10
+from tnn.examples.utils import setup_parser
 
 # setup parser
 parser = setup_parser()
@@ -21,7 +22,8 @@ args = parser.parse_args()
 seed_everything(args.seed)
 
 # setup data
-train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, args.n_test, args.batch_size)
+train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, args.n_test, args.batch_size,
+                                                      args.data_dir)
 
 
 # get device
@@ -81,13 +83,14 @@ else:
                                   tHamiltonianResNet(w, w + args.add_width_hamiltonian, dim3, M,
                                                      depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                                   Permute((1, 0, 2)),
-                                  View((-1, args.width * dim3)),
-                                  LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
+                                  View((-1, w * dim3)),
+                                  LinearLayer(w * dim3, 10, activation=None, bias=args.bias)
                                   ).to(device)
         loss = torch.nn.CrossEntropyLoss()
 
     regularizer = BlockRegularization((None, None,
                                        SmoothTimeRegularization(alpha=args.alpha),
+                                       None, None,
                                        TikhonovRegularization(alpha=args.alpha)))
 
 
