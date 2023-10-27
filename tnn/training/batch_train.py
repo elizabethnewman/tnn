@@ -15,11 +15,11 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
     keys, opt_params = optimizer_parameters(optimizer)
     param_norm, grad_norm = parameters_norm(net)
 
-    results = {'headers': ('',) * (4 + len(keys)) + ('running', '') + ('train', '') + ('valid', ''),
+    results = {'headers': ('',) * (4 + len(keys)) + ('running', '', '') + ('train', '') + ('valid', ''),
                'str': ('epoch',) + keys + ('|params|', '|grad|', 'time') +
-                      ('loss', 'acc', 'loss', 'acc', 'loss', 'acc'),
+                      ('obj', 'loss', 'acc', 'loss', 'acc', 'loss', 'acc'),
                'frmt': '{:<15d}' + len(keys) * '{:<15.4e}' + '{:<15.4e}{:<15.4e}{:<15.2f}' +
-                       '{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}',
+                       '{:<15.4e}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}',
                'val': None,
                'best_val_loss': torch.tensor(float('inf')).item(),
                'best_val_loss_net': deepcopy(net),
@@ -30,7 +30,7 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
     # initial evaluation
     train_out2 = test(net, criterion, train_loader, **factory_kwargs)
     test_out = test(net, criterion, test_loader, **factory_kwargs)
-    his = [-1] + opt_params + [param_norm, grad_norm, 0, 0, 0] + [*train_out2] + [*test_out]
+    his = [-1] + opt_params + [param_norm, grad_norm, 0, 0, 0, 0] + [*train_out2] + [*test_out]
     results['val'] = torch.tensor(his).view(1, -1)
 
     # store printouts for training
@@ -92,6 +92,7 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
     factory_kwargs = {'device': device, 'dtype': dtype}
     model.train()
     running_loss = 0
+    running_obj = 0
     correct = 0
     num_samples = 0
     criterion.reduction = 'mean'
@@ -114,13 +115,14 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
 
         if regularizer is not None:
             loss = loss + regularizer(model)
+        running_obj += data.shape[0] * loss.item()
 
         correct += pred.eq(target.view_as(pred)).sum().item()
 
         loss.backward()
         optimizer.step()
 
-    return running_loss / num_samples, 100 * correct / num_samples
+    return running_obj / num_samples, running_loss / num_samples, 100 * correct / num_samples
 
 
 def test(model: Module, criterion: Module, test_loader, device=None, dtype=None):

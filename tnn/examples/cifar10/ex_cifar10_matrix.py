@@ -25,7 +25,7 @@ train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, 
 # get device
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# form network
+# form network and regularizer
 if args.opening_layer:
     net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
                               LinearLayer(32 * 32 * 3, args.width, activation=torch.nn.Tanh()),
@@ -33,6 +33,10 @@ if args.opening_layer:
                                                 depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                               LinearLayer(args.width, 10, activation=None)
                               ).to(device)
+
+    regularizer = BlockRegularization((None, TikhonovRegularization(alpha=args.alpha),
+                                       SmoothTimeRegularization(alpha=args.alpha),
+                                       TikhonovRegularization(alpha=args.alpha)))
 else:
     w = 32 * 32 * 3
     net = torch.nn.Sequential(View((-1, 32 * 32 * 3)),
@@ -41,6 +45,10 @@ else:
                               LinearLayer(w, 10, activation=None)
                               ).to(device)
 
+    regularizer = BlockRegularization((None,
+                                       SmoothTimeRegularization(alpha=args.alpha),
+                                       TikhonovRegularization(alpha=args.alpha)))
+
 
 # choose loss function
 loss = torch.nn.CrossEntropyLoss()
@@ -48,9 +56,7 @@ loss = torch.nn.CrossEntropyLoss()
 # choose optimizer
 optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
-regularizer = BlockRegularization((None, TikhonovRegularization(alpha=args.alpha),
-                                  SmoothTimeRegularization(alpha=args.alpha),
-                                  TikhonovRegularization(alpha=args.alpha)))
+
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
