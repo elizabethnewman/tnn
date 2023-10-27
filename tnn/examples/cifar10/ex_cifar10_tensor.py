@@ -13,6 +13,7 @@ from copy import deepcopy
 import pickle
 from tnn.examples.cifar10.setup_cifar10 import setup_cifar10
 from tnn.examples.utils import setup_parser
+import pandas as pd
 
 # setup parser
 parser = setup_parser()
@@ -136,4 +137,5 @@ logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 results['last_net'] = deepcopy(net)
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
+pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))
 

@@ -11,6 +11,7 @@ from copy import deepcopy
 import pickle
 from tnn.examples.mnist.setup_mnist import setup_mnist
 from tnn.examples.utils import matrix_match_tensor_single_layer, setup_parser
+import pandas as pd
 
 # setup parser
 parser = setup_parser()
@@ -87,4 +88,5 @@ logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 results['last_net'] = deepcopy(net.cpu())
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
+pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))
 
