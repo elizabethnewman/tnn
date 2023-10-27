@@ -47,7 +47,7 @@ class tLinearLayer(nn.Module):
         return x
 
     def extra_repr(self) -> str:
-        return 'in_features={}, out_features={}, dim3={},, bias={}, activation={}'.format(
+        return 'in_features={}, out_features={}, dim3={}, bias={}, activation={}'.format(
             self.in_features, self.out_features,  self.dim3, self.bias is not None, self.activation
         )
 

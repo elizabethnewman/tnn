@@ -30,3 +30,7 @@ def matrix_match_tensor_single_layer(width, loss='t_cross_entropy'):
     else:
         return 0
 
+
+if __name__ == '__main__':
+    for width in range(2, 11):
+        print([matrix_match_tensor_single_layer(width, 't_cross_entropy'), matrix_match_tensor_single_layer(width, 'cross_entropy')])

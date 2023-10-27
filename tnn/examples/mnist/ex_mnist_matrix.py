@@ -16,9 +16,6 @@ from utils import matrix_match_tensor_single_layer
 parser = setup_parser()
 args = parser.parse_args()
 
-args.matrix_match_tensor = True
-args.width = 13
-args.loss = 't_cross_entropy'
 # seed for reproducibility
 seed_everything(args.seed)
 
