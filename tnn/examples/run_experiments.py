@@ -41,7 +41,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='t-NN Experiment Scheduler',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="Description"
+        description="Descripti
     )
     parser.add_argument('filename', nargs='?', default='tmp.csv', help='filename/path of parameter CSV')
     parser.add_argument('-m', '--multi', dest='multi', action='store_true', help='enable multiprocessing')
