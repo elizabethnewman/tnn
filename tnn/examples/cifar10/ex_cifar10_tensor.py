@@ -36,7 +36,7 @@ elif args.M == 'random':
 else:
     M = torch.eye(dim3, dtype=torch.float32, device=device)
 
-# form network and choose loss function
+# form network and choose loss function and regularizer
 if args.opening_layer:
     if args.loss == 't_cross_entropy':
         net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
@@ -60,6 +60,10 @@ if args.opening_layer:
 
         loss = torch.nn.CrossEntropyLoss()
 
+    regularizer = BlockRegularization((None, None, TikhonovRegularization(alpha=args.alpha),
+                                       SmoothTimeRegularization(alpha=args.alpha),
+                                       TikhonovRegularization(alpha=args.alpha)))
+
 else:
     w = 32 * 3
 
@@ -82,16 +86,14 @@ else:
                                   ).to(device)
         loss = torch.nn.CrossEntropyLoss()
 
+    regularizer = BlockRegularization((None, None,
+                                       SmoothTimeRegularization(alpha=args.alpha),
+                                       TikhonovRegularization(alpha=args.alpha)))
 
 
-
-# choose optimizer
+# choose optimizer and scheduler
 optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
-regularizer = BlockRegularization((None, None, TikhonovRegularization(alpha=args.alpha),
-                                  SmoothTimeRegularization(alpha=args.alpha),
-                                  TikhonovRegularization(alpha=args.alpha)))
-
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # create logger
