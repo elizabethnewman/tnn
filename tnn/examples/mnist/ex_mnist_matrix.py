@@ -2,16 +2,16 @@ import torch
 from tnn.layers import View
 from tnn.layers import LinearLayer
 from tnn.training.batch_train import train
-from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs
+from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs, setup_parser, matrix_match_tensor_single_layer
 import os
 import datetime
 import argparse
 import time
 from copy import deepcopy
 import pickle
-from tnn.examples.mnist.setup_mnist import setup_mnist
-from tnn.examples.utils import matrix_match_tensor_single_layer, setup_parser
+from setup_mnist import setup_mnist
 import pandas as pd
+
 
 # setup parser
 parser = setup_parser()

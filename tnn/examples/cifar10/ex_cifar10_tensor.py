@@ -4,15 +4,14 @@ from tnn.networks import tHamiltonianResNet
 from tnn.loss import tCrossEntropyLoss
 from tnn.regularization import SmoothTimeRegularization, TikhonovRegularization, BlockRegularization
 from tnn.training.batch_train import train
-from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs
+from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs, setup_parser
 from tnn.tensor_utils import dct_matrix, random_orthogonal
 import os
 import datetime
 import time
 from copy import deepcopy
 import pickle
-from tnn.examples.cifar10.setup_cifar10 import setup_cifar10
-from tnn.examples.utils import setup_parser
+from setup_cifar10 import setup_cifar10
 import pandas as pd
 
 # setup parser

@@ -5,15 +5,14 @@ from tnn.networks import tFullyConnected
 from tnn.loss import tCrossEntropyLoss
 from tnn.training.batch_train import train
 from tnn.tensor_utils import dct_matrix, random_orthogonal
-from tnn.utils import seed_everything, number_network_weights, makedirs, get_logger
+from tnn.utils import seed_everything, number_network_weights, get_logger, makedirs, setup_parser
 import os
 import datetime
 import argparse
 import time
 from copy import deepcopy
 import pickle
-from tnn.examples.mnist.setup_mnist import setup_mnist
-from tnn.examples.utils import setup_parser
+from setup_mnist import setup_mnist
 import pandas as pd
 
 
