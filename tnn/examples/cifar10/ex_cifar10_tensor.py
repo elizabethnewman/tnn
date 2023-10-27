@@ -36,7 +36,7 @@ elif args.M == 'random':
 else:
     M = torch.eye(dim3, dtype=torch.float32, device=device)
 
-# form network
+# form network and choose loss function
 if args.opening_layer:
     if args.loss == 't_cross_entropy':
         net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
@@ -46,6 +46,7 @@ if args.opening_layer:
                                                      depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                                   tLinearLayer(args.width, 10, dim3, M=M, activation=None)
                                   ).to(device)
+        loss = tCrossEntropyLoss(M=M)
     else:
         net = torch.nn.Sequential(View((-1, 32 * 3, 32)),
                                   Permute((1, 0, 2)),
@@ -56,6 +57,8 @@ if args.opening_layer:
                                   View((-1, args.width * dim3)),
                                   LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
                                   ).to(device)
+
+        loss = torch.nn.CrossEntropyLoss()
 
 else:
     w = 32 * 3
@@ -67,6 +70,7 @@ else:
                                                      depth=args.depth, h=args.h_step, activation=torch.nn.Tanh()),
                                   tLinearLayer(w, 10, dim3, M=M, activation=None)
                                   ).to(device)
+        loss = tCrossEntropyLoss(M=M)
     else:
         net = torch.nn.Sequential(View((-1, w, 32)),
                                   Permute((1, 0, 2)),
@@ -76,10 +80,10 @@ else:
                                   View((-1, args.width * dim3)),
                                   LinearLayer(args.width * dim3, 10, activation=None, bias=args.bias)
                                   ).to(device)
+        loss = torch.nn.CrossEntropyLoss()
 
 
-# choose loss function
-loss = tCrossEntropyLoss(M=M)
+
 
 # choose optimizer
 optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
