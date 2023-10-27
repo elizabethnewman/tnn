@@ -1,6 +1,18 @@
 # tnn
 Matrix-Mimetic Tensor Neural Networks 
 
+## Citation
+```
+@misc{newman2018stable,
+      title={Stable Tensor Neural Networks for Rapid Deep Learning}, 
+      author={Elizabeth Newman and Lior Horesh and Haim Avron and Misha Kilmer},
+      year={2018},
+      eprint={1811.06569},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
 ## Installation
 
 Using `pip`
