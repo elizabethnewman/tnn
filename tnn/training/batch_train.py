@@ -62,11 +62,11 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
 
         if test_out[0] <= results['best_val_loss']:
             results['best_val_loss'] = deepcopy(test_out[0])
-            results['best_val_loss_net'] = deepcopy(net.cpu())
+            results['best_val_loss_net'] = deepcopy(net).cpu()
 
         if test_out[1] >= results['best_val_acc']:
             results['best_val_acc'] = deepcopy(test_out[1])
-            results['best_val_acc_net'] = deepcopy(net.cpu())
+            results['best_val_acc_net'] = deepcopy(net).cpu()
 
         # print outs for training
         if logger is not None:
@@ -105,6 +105,7 @@ def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None,
             print(data.device, target.device)
             for n, p in model.named_parameters():
                 print(n, p.device)
+            count += 1
 
         optimizer.zero_grad()
         output = model(data)
