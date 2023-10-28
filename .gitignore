@@ -148,3 +148,4 @@ examples/mnist/data/MNIST/raw/train-labels-idx1-ubyte
 examples/mnist/data/MNIST/raw/train-images-idx3-ubyte
 examples/mnist/data/MNIST/raw/t10k-labels-idx1-ubyte
 examples/mnist/data/MNIST/raw/t10k-images-idx3-ubyte
+examples/mnist/experiments/matrix/2023_10_27_22_50_32/mnist_matrix.csv
