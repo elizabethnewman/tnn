@@ -90,15 +90,21 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
 
 def train_one_epoch(model, criterion, optimizer, train_loader, regularizer=None, device=None, dtype=None):
     factory_kwargs = {'device': device, 'dtype': dtype}
+    print(factory_kwargs)
     model.train()
     running_loss = 0
     running_obj = 0
     correct = 0
     num_samples = 0
     criterion.reduction = 'mean'
+    count = 0
 
     for data, target in train_loader:
         data, target = data.to(**factory_kwargs), target.to(**factory_kwargs)
+        if count == 0:
+            print(data.device, target.device)
+            for n, p in model.named_parameters():
+                print(n, p.device)
 
         optimizer.zero_grad()
         output = model(data)
