@@ -22,9 +22,9 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
                        '{:<15.4e}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}{:<15.4e}{:<15.2f}',
                'val': None,
                'best_val_loss': torch.tensor(float('inf')).item(),
-               'best_val_loss_net': deepcopy(net),
+               'best_val_loss_net': deepcopy(net).cpu(),
                'best_val_acc': 0.0,
-               'best_val_acc_net': deepcopy(net),
+               'best_val_acc_net': deepcopy(net).cpu(),
                'total_time': 0.0}
 
     # initial evaluation
