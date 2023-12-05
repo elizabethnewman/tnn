@@ -87,7 +87,7 @@ logger.info("--------------------------------------------------\n")
 # train!
 t0 = time.perf_counter()
 results = train(net, loss, optimizer, train_loader, val_loader, test_loader, max_epochs=args.max_epochs,
-                scheduler=scheduler, regularizer=regularizer, device=device, logger=logger)
+                scheduler=scheduler, regularizer=regularizer, device=device, logger=logger, sPath=sPath)
 t1 = time.perf_counter()
 
 
