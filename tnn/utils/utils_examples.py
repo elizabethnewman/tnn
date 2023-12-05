@@ -27,6 +27,7 @@ def setup_parser():
     parser.add_argument('--data_dir', type=str, default='data', help='data directory')
     return parser
 
+
 def matrix_match_tensor_single_layer(width, loss='t_cross_entropy'):
     W, H, n_classes = 28, 28, 10
     if loss == 'cross_entropy':

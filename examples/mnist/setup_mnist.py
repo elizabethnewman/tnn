@@ -19,8 +19,8 @@ def setup_mnist(n_train=50000, n_val=10000, n_test=10000, batch_size=32, data_di
     train_dataset.data = train_dataset.data[idx[:n_train]]
     train_dataset.targets = train_dataset.targets[idx[:n_train]]
 
-    val_dataset.data = val_dataset.data[idx[n_train:n_train + n_val]]
-    val_dataset.targets = val_dataset.targets[idx[n_train:n_train + n_val]]
+    val_dataset.data = val_dataset.data[idx[-n_val:]]
+    val_dataset.targets = val_dataset.targets[idx[-n_val:]]
 
     test_dataset.data = test_dataset.data[:n_test]
 
