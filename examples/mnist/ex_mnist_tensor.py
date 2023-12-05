@@ -106,7 +106,7 @@ logger.info("--------------------------------------------------\n")
 # train!
 t0 = time.perf_counter()
 results = train(net, loss, optimizer, train_loader, val_loader, test_loader, max_epochs=args.max_epochs,
-                scheduler=scheduler, device=device, logger=logger)
+                scheduler=scheduler, device=device, logger=logger, sPath=sPath)
 t1 = time.perf_counter()
 
 if torch.cuda.is_available():
@@ -114,7 +114,7 @@ if torch.cuda.is_available():
 
 logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 
-results['last_net'] = deepcopy(net).cpu()
+torch.save(net.state_dict(), sPath + '.last_net.pt')
 
-pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
+pickle.dump(results, open(os.path.join(sPath, '/results.pkl'), 'wb'))
 pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))

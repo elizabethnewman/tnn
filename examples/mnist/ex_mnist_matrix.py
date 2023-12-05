@@ -85,7 +85,7 @@ if torch.cuda.is_available():
 
 logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 
-results['last_net'] = deepcopy(net).cpu()
+torch.save(net.state_dict(), sPath + '/last_net.pt')
 
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
 pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))

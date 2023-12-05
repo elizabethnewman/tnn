@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 def train(net, criterion, optimizer, train_loader, val_loader, test_loader, scheduler=None, regularizer=None,
-          max_epochs=10, device=None, dtype=None, logger=None):
+          max_epochs=10, device=None, dtype=None, logger=None, sPath='tmp/'):
     factory_kwargs = {'device': device, 'dtype': dtype}
 
     keys, opt_params = optimizer_parameters(optimizer)
@@ -62,11 +62,13 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
 
         if test_out[0] <= results['best_val_loss']:
             results['best_val_loss'] = deepcopy(test_out[0])
-            results['best_val_loss_net'] = deepcopy(net).cpu()
+            results['best_val_loss_epoch'] = epoch
+            torch.save(net.state_dict(), sPath + '/best_val_loss_net.pt')
 
         if test_out[1] >= results['best_val_acc']:
             results['best_val_acc'] = deepcopy(test_out[1])
-            results['best_val_acc_net'] = deepcopy(net).cpu()
+            results['best_val_acc_epoch'] = epoch
+            torch.save(net.state_dict(), sPath + '/best_val_acc_net.pt')
 
         # print outs for training
         if logger is not None:
