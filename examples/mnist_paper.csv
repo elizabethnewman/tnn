@@ -2,3 +2,12 @@ script_dir,script_name,data_dir,seed,max_epochs,M,batch_size,n_train,n_val,n_tes
 mnist,ex_mnist_tensor.py,data,42,10,dct,32,100,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
 mnist,ex_mnist_tensor.py,data,42,10,dct,32,1000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
 mnist,ex_mnist_tensor.py,data,42,10,dct,32,10000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
+mnist,ex_mnist_tensor.py,data,42,10,dct,32,100,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_tensor.py,data,42,10,dct,32,1000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_tensor.py,data,42,10,dct,32,10000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,100,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,1000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,10000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,100,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,1000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,10000,10000,10000,1.00E-02,1.00E-03,0.9,100,8,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
