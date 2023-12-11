@@ -37,7 +37,13 @@ class tCrossEntropyLoss(tLoss):
         # tube with the smallest average norm (in absolute value) should be the target
         neg_input_nrm = -torch.norm(input_hat, dim=2).t() / input_hat.shape[2]
 
-        val = F.nll_loss(neg_input_nrm, target, ignore_index=self.ignore_index, reduction=self.reduction)
+        # val = F.nll_loss(neg_input_nrm, target, ignore_index=self.ignore_index, reduction=self.reduction)
+
+        val = F.nll_loss(input_hat[..., 0].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
+        for i in range(1, input_hat.shape[-1]):
+            val = val + F.nll_loss(input_hat[..., i].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
+
+        val = val / input_hat.shape[-1]
         return val, neg_input_nrm
 
 
@@ -77,3 +83,20 @@ def t_softmax(input, M, return_spatial=False):
         input_hat = modek_product(input, M.t())
 
     return input_hat
+
+
+if __name__ == "__main__":
+    from tnn.layers import tLinearLayer, Permute
+    din, dim3 = 2, 3
+    batch_size, n_classes = 11, 10
+    M = torch.eye(dim3)
+    sample, target = torch.rand(batch_size, din, dim3), torch.randint(0, n_classes, (batch_size,))
+    net = torch.nn.Sequential(Permute((1, 0, 2)),
+                              tLinearLayer(din, n_classes, 3, M=M)
+                              )
+
+    loss = tCrossEntropyLoss()
+
+    y = net(sample)
+    # y = loss(net(sample), target)
+

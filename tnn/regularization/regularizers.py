@@ -52,15 +52,23 @@ class SmoothTimeRegularization(nn.Module):
             p_old_bias = torch.zeros(1, requires_grad=False, device=device, dtype=dtype)
 
         for i, p in enumerate(net.parameters()):
+
             if bias:
+                if i > 1:
+                    if (i + 1) % 2:
+                        reg = reg + torch.norm(p - p_old_weight)
+                    else:
+                        reg = reg + torch.norm(p - p_old_bias)
+
                 if (i + 1) % 2:
-                    reg = reg + torch.norm(p - p_old_weight)
-                    p_old_weight = deepcopy(p)
+                    p_old_weight = p
                 else:
-                    reg = reg + torch.norm(p - p_old_bias)
-                    p_old_bias = deepcopy(p)
+                    p_old_bias = p
+
             else:
-                reg = reg + torch.norm(p - p_old_weight)
-                p_old_weight = deepcopy(p)
+                if i > 0:
+                    reg = reg + torch.norm(p - p_old_weight)
+
+                p_old_weight = p
 
         return 0.5 * self.alpha * reg
