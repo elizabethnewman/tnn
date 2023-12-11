@@ -1,7 +1,7 @@
 script_dir,script_name,data_dir,seed,max_epochs,M,batch_size,n_train,n_val,n_test,weight_decay,lr,gamma,step_size,width,depth,h_step,alpha,add_width_hamiltonian,opening_layer,loss,bias,matrix_match_tensor
-cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,96,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
-cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,96,8,0.1,0,0,FALSE,cross_entropy,1,FALSE
-cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,96,16,0.1,0,0,FALSE,cross_entropy,1,FALSE
-cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,3072,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
-cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,3072,8,0.1,0,0,FALSE,cross_entropy,1,FALSE
-cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,1.00E-02,1.00E-03,0.9,100,3072,16,0.1,0,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,96,4,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,96,8,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_tensor.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,96,16,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,3072,4,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,3072,8,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
+cifar10,ex_cifar10_matrix.py,data,42,100,dct,32,40000,10000,10000,0,1.00E-03,0.9,100,3072,16,0.1,1.00E-02,0,FALSE,cross_entropy,1,FALSE
