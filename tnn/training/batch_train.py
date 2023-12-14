@@ -62,13 +62,13 @@ def train(net, criterion, optimizer, train_loader, val_loader, test_loader, sche
         his += [*train_out] + [*train_out2] + [*val_out]
         results['val'] = torch.cat((results['val'], torch.tensor(his).view(1, -1)), dim=0)
 
-        if test_out[0] <= results['best_val_loss']:
-            results['best_val_loss'] = deepcopy(test_out[0])
+        if val_out[0] <= results['best_val_loss']:
+            results['best_val_loss'] = deepcopy(val_out[0])
             results['best_val_loss_epoch'] = epoch
             torch.save(net.state_dict(), sPath + '/best_val_loss_net.pt')
 
-        if test_out[1] >= results['best_val_acc']:
-            results['best_val_acc'] = deepcopy(test_out[1])
+        if val_out[1] >= results['best_val_acc']:
+            results['best_val_acc'] = deepcopy(val_out[1])
             results['best_val_acc_epoch'] = epoch
             torch.save(net.state_dict(), sPath + '/best_val_acc_net.pt')
 

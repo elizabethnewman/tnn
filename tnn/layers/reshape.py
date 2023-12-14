@@ -16,7 +16,9 @@ class Permute(nn.Module):
         self.dims = dims
 
     def forward(self, x):
-        return x.squeeze().permute(*self.dims).contiguous()
+        if x.ndim > len(self.dims):
+            x = x.squeeze()
+        return x.permute(*self.dims).contiguous()
 
 
 class Unfold(nn.Module):
