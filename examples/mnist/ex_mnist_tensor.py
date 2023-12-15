@@ -20,6 +20,9 @@ import pandas as pd
 parser = setup_parser()
 args = parser.parse_args()
 
+args.loss = 't_cross_entropy'
+args.n_train = 2000
+
 # seed for reproducibility
 seed_everything(args.seed)
 
@@ -30,7 +33,7 @@ train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, ar
 # get device
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# create transformation matrix
+# create transformation matri
 dim3 = 28
 if args.M == 'dct':
     M = dct_matrix(dim3, dtype=torch.float32, device=device)
@@ -86,7 +89,7 @@ sPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'experiments',
 filename = 'mnist_tensor.log'
 makedirs(sPath)
 logger = get_logger(logpath=os.path.join(sPath, filename), filepath=os.path.abspath(__file__), saving=True, mode="w")
-logger.info(f'mnist_matrix')
+logger.info(f'mnist_tensor')
 logger.info(f'args: {args}')
 
 logger.info("---------------------- Network ----------------------------")

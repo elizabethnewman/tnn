@@ -69,7 +69,7 @@ sPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'experiments',
 filename = 'cifar10_matrix.log'
 makedirs(sPath)
 logger = get_logger(logpath=os.path.join(sPath, filename), filepath=os.path.abspath(__file__), saving=True, mode="w")
-logger.info(f'mnist_matrix')
+logger.info(f'cifar10_matrix')
 logger.info(f'args: {args}')
 
 logger.info("---------------------- Network ----------------------------")
