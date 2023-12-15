@@ -19,6 +19,7 @@ import pandas as pd
 # setup parser
 parser = setup_parser()
 args = parser.parse_args()
+args.loss = 't_cross_entropy'
 
 # seed for reproducibility
 seed_everything(args.seed)
@@ -115,5 +116,6 @@ logger.info('Total Training Time: {:.2f} seconds'.format(t1 - t0))
 
 torch.save(net.state_dict(), sPath + '/last_net.pt')
 
+results['args'] = args
 pickle.dump(results, open(os.path.join(sPath, 'results.pkl'), 'wb'))
 pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.path.join(sPath, filename[:-4] + '.csv'))
