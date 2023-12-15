@@ -35,13 +35,14 @@ class tCrossEntropyLoss(tLoss):
         input_hat = t_log_softmax(input, M, return_spatial=False)
 
         # tube with the smallest average norm (in absolute value) should be the target
-        neg_input_nrm = -torch.norm(input_hat, dim=2).t() / input_hat.shape[2]
+        neg_input_nrm = -0.5 * torch.norm(input_hat, dim=2).t() ** 2 / input_hat.shape[2]
+        # neg_input_nrm = -torch.max(input_hat ** 2, dim=-1)[0]
 
-        # val = F.nll_loss(neg_input_nrm, target, ignore_index=self.ignore_index, reduction=self.reduction)
+        val = F.nll_loss(neg_input_nrm, target, ignore_index=self.ignore_index, reduction=self.reduction)
 
-        val = F.nll_loss(input_hat[..., 0].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
-        for i in range(1, input_hat.shape[-1]):
-            val = val + F.nll_loss(input_hat[..., i].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
+        # val = F.nll_loss(input_hat[..., 0].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
+        # for i in range(1, input_hat.shape[-1]):
+        #     val = val + F.nll_loss(input_hat[..., i].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
 
         val = val / input_hat.shape[-1]
         return val, neg_input_nrm

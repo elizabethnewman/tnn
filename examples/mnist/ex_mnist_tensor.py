@@ -31,7 +31,11 @@ train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, ar
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # create transformation matrix
-args.M = 'data'
+args.loss = 't_cross_entropy'
+args.width = 28
+args.M = 'dct'
+args.lr = 1e-2
+
 dim3 = 28
 if args.M == 'dct':
     M = dct_matrix(dim3, dtype=torch.float32, device=device)
