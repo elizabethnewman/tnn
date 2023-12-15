@@ -20,9 +20,6 @@ import pandas as pd
 parser = setup_parser()
 args = parser.parse_args()
 
-args.loss = 't_cross_entropy'
-args.n_train = 2000
-
 # seed for reproducibility
 seed_everything(args.seed)
 
