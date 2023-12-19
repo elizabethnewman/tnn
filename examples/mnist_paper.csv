@@ -19,3 +19,8 @@ mnist,ex_mnist_matrix.py,data,42,10,dct,32,4000,10000,10000,1.00E-04,1.00E-02,0.
 mnist,ex_mnist_matrix.py,data,42,10,dct,32,6000,10000,10000,1.00E-04,1.00E-02,0.9,100,28,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
 mnist,ex_mnist_matrix.py,data,42,10,dct,32,8000,10000,10000,1.00E-04,1.00E-02,0.9,100,28,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
 mnist,ex_mnist_matrix.py,data,42,10,dct,32,10000,10000,10000,1.00E-04,1.00E-02,0.9,100,28,4,0.1,0,0,FALSE,t_cross_entropy,1,TRUE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,2000,10000,10000,1.00E-04,1.00E-02,0.9,100,784,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,4000,10000,10000,1.00E-04,1.00E-02,0.9,100,784,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,6000,10000,10000,1.00E-04,1.00E-02,0.9,100,784,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,8000,10000,10000,1.00E-04,1.00E-02,0.9,100,784,4,0.1,0,0,FALSE,cross_entropy,1,FALSE
+mnist,ex_mnist_matrix.py,data,42,10,dct,32,10000,10000,10000,1.00E-04,1.00E-02,0.9,100,784,4,0.1,0,0,FALSE,cross_entropy,1,FALSE

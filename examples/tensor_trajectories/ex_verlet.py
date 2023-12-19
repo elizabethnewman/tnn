@@ -82,14 +82,15 @@ net = torch.nn.Sequential(
 
 # net = torch.nn.Sequential(torch.nn.Linear(3, 3))
 
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tHamiltonianResNet(1, width=1, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-#     Permute((1, 0, 2)),
-#     View((-1, 3)),
-#     torch.nn.Linear(3, 3)
-# )
+h = 1.0
+net = torch.nn.Sequential(
+    View((-1, 1, 3)),
+    Permute((1, 0, 2)),
+    tHamiltonianResNet(1, width=1, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
+    Permute((1, 0, 2)),
+    View((-1, 3)),
+    torch.nn.Linear(3, 3)
+)
 
 # w = 3
 
