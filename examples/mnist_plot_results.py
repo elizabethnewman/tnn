@@ -5,8 +5,6 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-
-
 load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist/tensor/'
 
 subdir_names = []
@@ -49,22 +47,20 @@ mpl.rcParams['figure.figsize'] = (8, 6)
 mpl.rcParams['lines.linewidth'] = 4
 mpl.rcParams['font.size'] = 10
 
-# exp_idx = [0, 1, 2, 3, 4]
-exp_idx = [5, 6, 7, 8, 9]
+exp_idx = [0, 1, 2, 3, 4]
+# exp_idx = [5, 6, 7, 8, 9]
 
 
 for i in exp_idx:
     idx = results_tensor[i]['str'].index('loss') + 2
     p = plt.semilogy(results_tensor[i]['val'][:, idx] / results_tensor[i]['val'][0, idx], label='tensor')
-    p = plt.semilogy(results_matrix[i]['val'][:, idx] / results_matrix[i]['val'][0, idx], '--', label='matrix', color=p[0].get_color())
+    p = plt.semilogy(results_matrix[i + 5]['val'][:, idx] / results_matrix[i]['val'][0, idx], '--', label='matrix', color=p[0].get_color())
     plt.legend()
 
 # plt.ylim([0, 100])
 plt.xlabel('epoch')
 plt.ylabel('loss')
 plt.show()
-
-
 
 
 mpl.rcParams.update(mpl.rcParamsDefault)
@@ -186,6 +182,8 @@ print('accuracy = {:<15.4f}'.format(test_out[1]))
 #%% FORWARD PROPAGATE
 from copy import deepcopy
 
+# os.mkdir('tmp/')
+
 net_tensor.eval()
 
 with torch.no_grad():
@@ -197,17 +195,70 @@ with torch.no_grad():
     x_list.append(net_tensor[4](net_tensor[3](net_tensor[2](x_list[-1].permute(1, 0, 2)))))
 
 
+# for i in range(x.shape[0]):
+#     plt.subplot(4, 8, i + 1)
+#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+#     plt.axis('off')
+#
+# plt.show()
+
+
 for i in range(x.shape[0]):
-    plt.subplot(4, 8, i + 1)
-    plt.imshow(x_list[0][i, 0, :, :])
+    # plt.subplot(4, 8, i + 1)
+    plt.clf()
+    plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
     plt.axis('off')
+    plt.savefig('tmp/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
 
-plt.show()
+
+# plt.show()
+
+#%% FORWARD PROPAGATE
+
+from copy import deepcopy
+
+args = results_matrix[-1]['args']
+
+# form matrix network
+if args.width == 0:
+    net_matrix2 = torch.nn.Sequential(View((-1, 784)),
+                                     LinearLayer(784, 10, activation=None, bias=args.bias)
+                                     )
+else:
+    w = args.width
+    if args.matrix_match_tensor:
+        w = matrix_match_tensor_single_layer(args.width, args.loss)
+
+    net_matrix2 = torch.nn.Sequential(View((-1, 784)),
+                                     LinearLayer(784, w, activation=torch.nn.Tanh(), bias=args.bias),
+                                     LinearLayer(w, 10, activation=None, bias=args.bias)
+                                     )
+
+net_matrix2.load_state_dict(weights_matrix[-1])
+
+net_matrix2.eval()
+
+with torch.no_grad():
+    x, y = next(iter(train_loader))
+
+    x_list = [deepcopy(x)]
+    x_list.append(net_matrix2[1](net_matrix2[0](x_list[-1])).reshape(-1, 28, 28))
 
 
 for i in range(x.shape[0]):
-    plt.subplot(4, 8, i + 1)
-    plt.imshow(x_list[1][i, :, :])
+    # plt.subplot(4, 8, i + 1)
+    plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
     plt.axis('off')
+    plt.savefig('tmp/mnist_input_' + str(i) + '.png', bbox_inches='tight')
 
-plt.show()
+# plt.show()
+
+
+for i in range(x.shape[0]):
+    # plt.subplot(4, 8, i + 1)
+    plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+    plt.axis('off')
+    plt.savefig('tmp/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
+
+
+# plt.show()
