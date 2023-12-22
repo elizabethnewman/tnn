@@ -192,6 +192,38 @@ print('Test performance: TENSOR')
 print('loss = {:<15.4e}'.format(test_out[0]))
 print('accuracy = {:<15.4f}'.format(test_out[1]))
 
+#%% RESULTS PER CLASS
+from copy import deepcopy
+import numpy as np
+
+store = torch.zeros(10, 2, 3)
+
+for k, tmp in enumerate([train_loader, val_loader, test_loader]):
+    for i in range(10):
+        tmp_loader = deepcopy(tmp)
+        # idx = tuple((torch.tensor(tmp_loader.dataset.targets) == i).nonzero().squeeze().tolist())
+        labels = np.asarray(tmp_loader.dataset.targets).astype(np.uint8)
+        tmp_loader.dataset.data = tmp_loader.dataset.data[labels == i]
+        tmp_loader.dataset.targets = labels[labels == i]
+        mat_out = test(net_matrix, loss_matrix, tmp_loader)
+        ten_out = test(net_tensor, loss_tensor, tmp_loader)
+        print(i, sum(tmp_loader.dataset.targets == i).item())
+        store[i, 0, k] = mat_out[1]
+        store[i, 1, k] = ten_out[1]
+    # print('class = {:d}:\t mat = {:<15.2f} ten = {:<15.2f}'.format(i, mat_out[1], ten_out[1]))
+
+# print store for latex
+# for i in range(2):
+#     print(('& ' + 9 * '{:<2.2f} &  ' + '\\\\').format(*tuple(store[:, i])))
+
+#%%
+
+for k in range(3):
+    for j in range(2):
+        for i in range(10):
+            print(('& {:<2.2f} ' + '').format(store[i, j, k]), end="")
+        print('\\\\')
+
 #%% FORWARD PROPAGATE
 from copy import deepcopy
 
@@ -269,3 +301,4 @@ tmp = (255 * (x[idx] - x[idx].min() / (x[idx].max() - x[idx].min())))
 tmp = train_loader.dataset.data[idx]
 plt.imshow(tmp)
 plt.show()
+
