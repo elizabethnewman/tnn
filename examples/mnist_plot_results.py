@@ -89,11 +89,12 @@ import os
 from tnn.tensor_utils import dct_matrix, random_orthogonal
 from tnn.training import test
 
-os.chdir('/Users/elizabethnewman/Library/CloudStorage/OneDrive-EmoryUniversity/[000] Code/tnn/examples/mnist')
+os.chdir('/Users/elizabethnewman/Library/CloudStorage/OneDrive-EmoryUniversity/[000] Code/tnn/examples')
 
 from mnist.setup_mnist import setup_mnist
 
-net_idx = 0
+net_idx = 4
+# net_idx = 9
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -203,12 +204,12 @@ with torch.no_grad():
 # plt.show()
 
 
-for i in range(x.shape[0]):
-    # plt.subplot(4, 8, i + 1)
-    plt.clf()
-    plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-    plt.axis('off')
-    plt.savefig('tmp/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
+# for i in range(x.shape[0]):
+#     # plt.subplot(4, 8, i + 1)
+#     plt.clf()
+#     plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+#     plt.axis('off')
+#     plt.savefig('tmp/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
 
 
 # plt.show()
@@ -217,7 +218,7 @@ for i in range(x.shape[0]):
 
 from copy import deepcopy
 
-args = results_matrix[-1]['args']
+args = results_matrix[net_idx]['args']
 
 # form matrix network
 if args.width == 0:
@@ -245,20 +246,53 @@ with torch.no_grad():
     x_list.append(net_matrix2[1](net_matrix2[0](x_list[-1])).reshape(-1, 28, 28))
 
 
-for i in range(x.shape[0]):
-    # plt.subplot(4, 8, i + 1)
-    plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-    plt.axis('off')
-    plt.savefig('tmp/mnist_input_' + str(i) + '.png', bbox_inches='tight')
+# for i in range(x.shape[0]):
+#     # plt.subplot(4, 8, i + 1)
+#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+#     plt.axis('off')
+#     plt.savefig('tmp/mnist_input_' + str(i) + '.png', bbox_inches='tight')
+#
+# # plt.show()
+#
+#
+# for i in range(x.shape[0]):
+#     # plt.subplot(4, 8, i + 1)
+#     plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+#     plt.axis('off')
+#     plt.savefig('tmp/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
+
 
 # plt.show()
 
+#%% ACCURACY PER CLASS
 
-for i in range(x.shape[0]):
-    # plt.subplot(4, 8, i + 1)
-    plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-    plt.axis('off')
-    plt.savefig('tmp/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
+store = torch.zeros(10, 2, 3)
 
+for k, tmp in enumerate([train_loader, val_loader, test_loader]):
+    for i in range(10):
+        tmp_loader = deepcopy(tmp)
+        tmp_loader.dataset.data = tmp_loader.dataset.data[tmp_loader.dataset.targets == i]
+        tmp_loader.dataset.targets = tmp_loader.dataset.targets[tmp_loader.dataset.targets == i]
+        mat_out = test(net_matrix, loss_matrix, tmp_loader)
+        ten_out = test(net_tensor, loss_tensor, tmp_loader)
+        print(i, sum(tmp_loader.dataset.targets == i).item())
+        store[i, 0, k] = mat_out[1]
+        store[i, 1, k] = ten_out[1]
+    # print('class = {:d}:\t mat = {:<15.2f} ten = {:<15.2f}'.format(i, mat_out[1], ten_out[1]))
 
-# plt.show()
+# print store for latex
+# for i in range(2):
+#     print(('& ' + 9 * '{:<2.2f} &  ' + '\\\\').format(*tuple(store[:, i])))
+
+#%%
+
+for k in range(3):
+    for j in range(2):
+        for i in range(10):
+            print(('& {:<2.2f} ' + '').format(store[i, j, k]), end="")
+        print('\\\\')
+
+# test_out = test(net_tensor, loss_tensor, test_loader)
+# print('Test performance: TENSOR')
+# print('loss = {:<15.4e}'.format(test_out[0]))
+# print('accuracy = {:<15.4f}'.format(test_out[1]))
