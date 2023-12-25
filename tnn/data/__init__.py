@@ -1,1 +1,0 @@
-from .stripes import StripesDataset

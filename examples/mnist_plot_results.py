@@ -5,7 +5,7 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist/tensor/'
+load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full/tensor/'
 
 subdir_names = []
 for subdir_name in os.listdir(load_dir):
@@ -23,7 +23,7 @@ for subdir_name in subdir_names:
     weights_tensor.append(torch.load(load_dir + subdir_name + '/best_val_acc_net.pt', map_location=torch.device('cpu')))
 
 
-load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist/matrix/'
+load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full/matrix/'
 
 subdir_names = []
 for subdir_name in os.listdir(load_dir):
@@ -47,14 +47,14 @@ mpl.rcParams['figure.figsize'] = (8, 6)
 mpl.rcParams['lines.linewidth'] = 4
 mpl.rcParams['font.size'] = 10
 
-exp_idx = [0, 1, 2, 3, 4]
+# exp_idx = [0, 1, 2, 3, 4]
 # exp_idx = [5, 6, 7, 8, 9]
-
+exp_idx = [0, 1]
 
 for i in exp_idx:
     idx = results_tensor[i]['str'].index('loss') + 2
     p = plt.semilogy(results_tensor[i]['val'][:, idx] / results_tensor[i]['val'][0, idx], label='tensor')
-    p = plt.semilogy(results_matrix[i + 5]['val'][:, idx] / results_matrix[i]['val'][0, idx], '--', label='matrix', color=p[0].get_color())
+    # p = plt.semilogy(results_matrix[i + 5]['val'][:, idx] / results_matrix[i]['val'][0, idx], '--', label='matrix', color=p[0].get_color())
     plt.legend()
 
 # plt.ylim([0, 100])
@@ -93,13 +93,17 @@ os.chdir('/Users/elizabethnewman/Library/CloudStorage/OneDrive-EmoryUniversity/[
 
 from mnist.setup_mnist import setup_mnist
 
-net_idx = 4
+# net_idx = 4
+
 # net_idx = 9
 
+net_idx = 1
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # MATRIX
 args = results_matrix[net_idx]['args']
+
+seed_everything(args.seed)
 
 train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, args.n_test, args.batch_size,
                                                     args.data_dir)
@@ -180,10 +184,49 @@ print('Test performance: TENSOR')
 print('loss = {:<15.4e}'.format(test_out[0]))
 print('accuracy = {:<15.4f}'.format(test_out[1]))
 
+#%% ACCURACY PER CLASS
+from copy import deepcopy
+
+store = torch.zeros(10, 2, 3)
+
+for k, tmp in enumerate([train_loader, val_loader, test_loader]):
+    # out = test(net_matrix, loss_matrix, tmp)
+    # print('matrix:', out[1])
+    out = test(net_tensor, loss_tensor, tmp)
+    print('tensor:', out[1])
+
+    # for i in range(10):
+    #     tmp_loader = deepcopy(tmp)
+    #     tmp_loader.dataset.data = tmp_loader.dataset.data[tmp_loader.dataset.targets == i]
+    #     tmp_loader.dataset.targets = tmp_loader.dataset.targets[tmp_loader.dataset.targets == i]
+    #     mat_out = test(net_matrix, loss_matrix, tmp_loader)
+    #     ten_out = test(net_tensor, loss_tensor, tmp_loader)
+    #     print(i, sum(tmp_loader.dataset.targets == i).item())
+    #     store[i, 0, k] = mat_out[1]
+    #     store[i, 1, k] = ten_out[1]
+    # print('class = {:d}:\t mat = {:<15.2f} ten = {:<15.2f}'.format(i, mat_out[1], ten_out[1]))
+
+# print store for latex
+# for i in range(2):
+#     print(('& ' + 9 * '{:<2.2f} &  ' + '\\\\').format(*tuple(store[:, i])))
+
+#%%
+
+for k in range(3):
+    for j in range(2):
+        for i in range(10):
+            print(('& {:<2.2f} ' + '').format(store[i, j, k]), end="")
+        print('\\\\')
+
+
 #%% FORWARD PROPAGATE
 from copy import deepcopy
 
 # os.mkdir('tmp/')
+
+# if mnist_img does not exist, create it
+if not os.path.exists('mnist_img'):
+    os.mkdir('mnist_img')
 
 net_tensor.eval()
 
@@ -193,23 +236,26 @@ with torch.no_grad():
     x_list = [deepcopy(x)]
 
     x_list.append(net_tensor[1](net_tensor[0](x_list[-1])).permute(1, 0, 2))
-    x_list.append(net_tensor[4](net_tensor[3](net_tensor[2](x_list[-1].permute(1, 0, 2)))))
-
-
-# for i in range(x.shape[0]):
-#     plt.subplot(4, 8, i + 1)
-#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-#     plt.axis('off')
-#
-# plt.show()
+    # x_list.append(net_tensor[4](net_tensor[3](net_tensor[2](x_list[-1].permute(1, 0, 2)))))
 
 
 # for i in range(x.shape[0]):
 #     # plt.subplot(4, 8, i + 1)
 #     plt.clf()
-#     plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
+#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min(), cmap='gray')
 #     plt.axis('off')
-#     plt.savefig('tmp/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
+#     plt.savefig('mnist_img/mnist_input_' + str(i) + '.png', bbox_inches='tight')
+
+#
+# plt.show()
+
+
+for i in range(x.shape[0]):
+    # plt.subplot(4, 8, i + 1)
+    plt.clf()
+    plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1)
+    plt.axis('off')
+    plt.savefig('mnist_img/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
 
 
 # plt.show()
@@ -218,7 +264,7 @@ with torch.no_grad():
 
 from copy import deepcopy
 
-args = results_matrix[net_idx]['args']
+args = results_matrix[-1]['args']
 
 # form matrix network
 if args.width == 0:
@@ -250,49 +296,75 @@ with torch.no_grad():
 #     # plt.subplot(4, 8, i + 1)
 #     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
 #     plt.axis('off')
-#     plt.savefig('tmp/mnist_input_' + str(i) + '.png', bbox_inches='tight')
-#
-# # plt.show()
-#
-#
-# for i in range(x.shape[0]):
-#     # plt.subplot(4, 8, i + 1)
-#     plt.imshow(x_list[1][i, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-#     plt.axis('off')
-#     plt.savefig('tmp/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
+#     plt.savefig('mnist_img/mnist_input_' + str(i) + '.png', bbox_inches='tight')
+
+# plt.show()
+
+
+for i in range(x.shape[0]):
+    # plt.subplot(4, 8, i + 1)
+    plt.clf()
+    plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1)
+    plt.axis('off')
+    plt.savefig('mnist_img/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
 
 
 # plt.show()
 
-#%% ACCURACY PER CLASS
 
-store = torch.zeros(10, 2, 3)
-
-for k, tmp in enumerate([train_loader, val_loader, test_loader]):
-    for i in range(10):
-        tmp_loader = deepcopy(tmp)
-        tmp_loader.dataset.data = tmp_loader.dataset.data[tmp_loader.dataset.targets == i]
-        tmp_loader.dataset.targets = tmp_loader.dataset.targets[tmp_loader.dataset.targets == i]
-        mat_out = test(net_matrix, loss_matrix, tmp_loader)
-        ten_out = test(net_tensor, loss_tensor, tmp_loader)
-        print(i, sum(tmp_loader.dataset.targets == i).item())
-        store[i, 0, k] = mat_out[1]
-        store[i, 1, k] = ten_out[1]
-    # print('class = {:d}:\t mat = {:<15.2f} ten = {:<15.2f}'.format(i, mat_out[1], ten_out[1]))
-
-# print store for latex
-# for i in range(2):
-#     print(('& ' + 9 * '{:<2.2f} &  ' + '\\\\').format(*tuple(store[:, i])))
-
-#%%
-
-for k in range(3):
-    for j in range(2):
-        for i in range(10):
-            print(('& {:<2.2f} ' + '').format(store[i, j, k]), end="")
-        print('\\\\')
 
 # test_out = test(net_tensor, loss_tensor, test_loader)
 # print('Test performance: TENSOR')
 # print('loss = {:<15.4e}'.format(test_out[0]))
 # print('accuracy = {:<15.4f}'.format(test_out[1]))
+
+
+#%%
+from tnn.loss.t_loss import t_softmax
+import matplotlib as mpl
+
+x, y = next(iter(test_loader))
+z = net_tensor(x)
+tmp3 = t_softmax(z, M=M, return_spatial=False)
+
+xx, yy = torch.meshgrid(torch.arange(10), torch.arange(28), indexing='ij')
+xx, yy = xx.ravel(), yy.ravel()
+
+# fig = plt.figure(figsize=(8, 8))
+# ax = fig.add_subplot(111, projection='3d')
+# tt = tmp3[:, 19, :].detach().reshape(-1)
+# colors = plt.cm.viridis(tt.flatten() / float(tt.max()))
+#
+# p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
+# fig.colorbar(p, cmap=colors)
+# plt.show()
+#
+# fig = plt.figure(figsize=(8, 8))
+# ax = fig.add_subplot(111, projection='3d')
+# tt = tmp3[:, 19, :].detach().reshape(-1)
+
+
+loss, target_pred = loss_tensor(z, y)
+pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
+
+colors = mpl.colormaps['hot']
+
+for i in range(tmp3.shape[1]):
+    plt.imshow(tmp3[:, i, :].detach(), vmin=0, vmax=1, cmap=colors)
+    # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
+    # fig.colorbar(p, cmap=colors)
+    # plt.colorbar()
+    plt.axis('off')
+    # plt.show()
+    plt.savefig(f'mnist_acc_per_class/img_{i}_tloss.png', bbox_inches='tight', pad_inches=0)
+
+
+
+for i in range(x.shape[0]):
+    plt.imshow(x[i].squeeze(), vmin=x.min(), vmax=x.max(), cmap='gray')
+    # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
+    # fig.colorbar(p, cmap=colors)
+    # plt.colorbar()
+    plt.axis('off')
+    # plt.show()
+    plt.savefig(f'mnist_acc_per_class/orig_{i}.png', bbox_inches='tight', pad_inches=0)

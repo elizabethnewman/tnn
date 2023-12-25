@@ -99,6 +99,7 @@ net_idx = 0
 # MATRIX
 args = results_matrix[net_idx]['args']
 
+seed_everything(args.seed)
 train_loader, val_loader, test_loader = setup_cifar10(args.n_train, args.n_val, args.n_test, args.batch_size,
                                                       args.data_dir)
 
@@ -199,6 +200,10 @@ import numpy as np
 store = torch.zeros(10, 2, 3)
 
 for k, tmp in enumerate([train_loader, val_loader, test_loader]):
+    out = test(net_matrix, loss_matrix, tmp)
+    print('matrix:', out[1])
+    out = test(net_tensor, loss_tensor, tmp)
+    print('tensor:', out[1])
     for i in range(10):
         tmp_loader = deepcopy(tmp)
         # idx = tuple((torch.tensor(tmp_loader.dataset.targets) == i).nonzero().squeeze().tolist())
@@ -227,6 +232,10 @@ for k in range(3):
 #%% FORWARD PROPAGATE
 from copy import deepcopy
 
+# make directory if it doesn't exist
+if not os.path.exists('cifar10_img'):
+    os.mkdir('cifar10_img')
+
 net_tensor.eval()
 
 with torch.no_grad():
@@ -243,14 +252,14 @@ with torch.no_grad():
 
 
 cmaps = [mpl.colormaps['Reds'], mpl.colormaps['Greens'], mpl.colormaps['Blues']]
-for i in [2, 8, 19, 29]:
+for i in [2, 14, 16, 31]:
     # plt.subplot(4, 8, i + 1)
     for j in range(len(x_list)):
         for k in range(3):
             plt.clf()
-            plt.imshow(x_list[j][i, :, :, :].permute(1, 2, 0)[:, :, k], cmap=cmaps[k])
+            plt.imshow(x_list[j][i, :, :, :].permute(1, 2, 0)[:, :, k], cmap=cmaps[k], vmin=-1 - j * 0.25, vmax=1+j * 0.25)
             plt.axis('off')
-            plt.savefig('tmp/tensor_{}_channel_{}_layer_{}.png'.format(i, k, j), bbox_inches='tight', pad_inches=0)
+            plt.savefig('cifar10_img/tensor_{}_channel_{}_layer_{}.png'.format(i, k, j), bbox_inches='tight', pad_inches=0)
 
 
 # plt.show()
@@ -276,27 +285,27 @@ with torch.no_grad():
         x_list.append(deepcopy(x.reshape(32, 3, 32, 32)))
 
 
-cmaps = [mpl.colormaps['Reds'], mpl.colormaps['Greens'], mpl.colormaps['Blues']]
-for i in [2, 8, 19, 29]:
+cmaps = [mpl.colormaps['Reds'], mpl.colormaps['Greens'], mpl.colormaps['Blues'], mpl.colormaps['Greys']]
+for i in [2, 14, 16, 31]:
     # plt.subplot(4, 8, i + 1)
     for j in range(len(x_list)):
         for k in range(3):
             plt.clf()
-            plt.imshow(x_list[j][i, :, :, :].permute(1, 2, 0)[:, :, k], cmap=cmaps[k])
+            plt.imshow(x_list[j][i, :, :, :].permute(1, 2, 0)[:, :, k], cmap=cmaps[k], vmin=-1 - j * 0.25, vmax=1+j * 0.25)
             plt.axis('off')
-            plt.savefig('tmp/matrix_{}_channel_{}_layer_{}.png'.format(i, k, j), bbox_inches='tight', pad_inches=0)
+            plt.savefig('cifar10_img/matrix_{}_channel_{}_layer_{}.png'.format(i, k, j), bbox_inches='tight', pad_inches=0)
 
 #%% ORIGINAL
-for i in [2, 8, 19, 29]:
+for i in [2, 14, 16, 31]:
     plt.clf()
     plt.imshow(train_loader.dataset.data[i])
     plt.axis('off')
-    plt.savefig('tmp/orig_{}.png'.format(i), bbox_inches='tight', pad_inches=0)
+    plt.savefig('cifar10_img/orig_{}.png'.format(i), bbox_inches='tight', pad_inches=0)
 
 #%%
 import numpy as np
 
-idx = 29
+idx = 14
 tmp = (255 * (x[idx] - x[idx].min() / (x[idx].max() - x[idx].min())))
 tmp = train_loader.dataset.data[idx]
 plt.imshow(tmp)

@@ -152,3 +152,9 @@ examples/mnist/experiments/matrix/2023_10_27_22_50_32/mnist_matrix.csv
 .DS_Store
 
 examples/tensor_trajectories/experiments/*
+examples/mnist/experiments/*
+examples/cifar10/experiments/*
+examples/mnist_img/*
+examples/cifar10_img/*
+examples/tmp/*
+examples/mnist_acc_per_class/*
