@@ -44,7 +44,7 @@ class tCrossEntropyLoss(tLoss):
         # for i in range(1, input_hat.shape[-1]):
         #     val = val + F.nll_loss(input_hat[..., i].t(), target, ignore_index=self.ignore_index, reduction=self.reduction)
 
-        val = val / input_hat.shape[-1]
+        # val = val / input_hat.shape[-1]
         return val, neg_input_nrm
 
 
