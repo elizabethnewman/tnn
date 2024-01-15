@@ -120,7 +120,7 @@ pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.pat
 #%%
 import matplotlib.pyplot as plt
 x, y = next(iter(train_loader))
-z = net(x).detach()
+z = net(x.to(device)).cpu().detach()
 
 vmax = x.max()
 vmin = x.min()

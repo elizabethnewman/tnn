@@ -36,7 +36,8 @@ if args.auto_width is None or args.auto_width == 0:
     net = torch.nn.Sequential(View((-1, 784)),
                               FullyConnected((784, args.auto_width, args.width), activation=torch.nn.Tanh(),
                                              bias=args.bias),
-                              FullyConnected((args.width, args.auto_width), activation=torch.nn.Tanh(), bias=args.bias),
+                              FullyConnected((args.width, args.auto_width), activation=torch.nn.Tanh(),
+                                             bias=args.bias),
                               LinearLayer(args.auto_width, 784, activation=None, bias=args.bias),
                               View((-1, 1, 28, 28))
                               ).to(device)
@@ -98,7 +99,7 @@ pd.DataFrame.to_csv(pd.DataFrame(results['val'], columns=results['str']), os.pat
 #%%
 import matplotlib.pyplot as plt
 x, y = next(iter(train_loader))
-z = net(x).detach()
+z = net(x.to(device)).cpu().detach()
 
 vmax = x.max()
 vmin = x.min()
