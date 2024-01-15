@@ -16,13 +16,17 @@ def setup_cifar100(n_train=50000, n_val=10000, n_test=10000, batch_size=64, data
     # make the dataset smaller to test if code runs
     idx = torch.randperm(train_dataset.data.shape[0])
 
-    train_sampler = torch.utils.data.SubsetRandomSampler(idx[:n_train])
-    val_sampler = torch.utils.data.SubsetRandomSampler(idx[n_train:n_train + n_val])
-    test_sampler = torch.utils.data.SubsetRandomSampler(torch.arange(test_dataset.data.shape[0])[:n_test])
+    train_dataset.data = train_dataset.data[idx[:n_train]]
+    train_dataset.targets = list(train_dataset.targets[i] for i in idx[:n_train])
 
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, sampler=val_sampler)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, sampler=test_sampler)
+    val_dataset.data = val_dataset.data[idx[n_train:n_train + n_val]]
+    val_dataset.targets = list(val_dataset.targets[i] for i in idx[n_train:n_train + n_val])
+
+    test_dataset.data = test_dataset.data[:n_test]
+
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size)
 
     return train_loader, val_loader, test_loader
 
