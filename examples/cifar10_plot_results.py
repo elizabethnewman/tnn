@@ -92,7 +92,7 @@ os.chdir('/Users/elizabethnewman/Library/CloudStorage/OneDrive-EmoryUniversity/[
 print(os.getcwd())
 from cifar10.setup_cifar10 import setup_cifar10
 
-net_idx = 0
+net_idx = 1
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -129,7 +129,7 @@ print('accuracy = {:<15.4f}'.format(test_out[1]))
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # TENSOR
-args = results_tensor[net_idx]['args']
+args = results_tensor[net_idx + 2]['args']
 
 # create transformation matrix
 dim3 = 32
@@ -186,7 +186,7 @@ else:
                                          )
         loss_tensor = torch.nn.CrossEntropyLoss()
 
-net_tensor.load_state_dict(weights_tensor[net_idx])
+net_tensor.load_state_dict(weights_tensor[net_idx + 2])
 
 test_out = test(net_tensor, loss_tensor, test_loader)
 print('Test performance: TENSOR')

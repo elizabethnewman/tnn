@@ -42,58 +42,7 @@ dim3 = 3
 # M = dct_matrix(dim3, dtype=torch.float32)
 M = torch.eye(dim3, dtype=torch.float32)
 
-h = 0.5
-
-# create network
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tResNet(1, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-#     tLinearLayer(1, 3, dim3, M=M, activation=None)
-# )
-
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tHamiltonianResNet(1, width=1, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-#     tLinearLayer(1, 3, dim3, M=M, activation=None),
-# )
-
-# net = torch.nn.Sequential(
-#     ResNet(3, depth=32, h=h, activation=torch.nn.Tanh()),
-#     torch.nn.Linear(3, 3)
-# )
-
-# net = torch.nn.Sequential(
-#     torch.nn.Linear(3, 2),
-#     torch.nn.Tanh(),
-#     torch.nn.Linear(2, 3)
-# )
-
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tLinearLayer(1, 1, dim3, M=M),
-#     torch.nn.Tanh(),
-#     Permute((1, 0, 2)),
-#     View((-1, 1 * dim3)),
-#     torch.nn.Linear(1 * dim3, 3)
-# )
-
-# net = torch.nn.Sequential(torch.nn.Linear(3, 3))
-
-h = 1.0
-net = torch.nn.Sequential(
-    View((-1, 1, 3)),
-    Permute((1, 0, 2)),
-    tHamiltonianResNet(1, width=1, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-    Permute((1, 0, 2)),
-    View((-1, 3)),
-    torch.nn.Linear(3, 3)
-)
-
-
-h = 2.0
+h = 5.0
 net = torch.nn.Sequential(
     View((-1, 1, 3)),
     Permute((1, 0, 2)),
@@ -103,53 +52,14 @@ net = torch.nn.Sequential(
     torch.nn.Linear(3, 3)
 )
 
-# w = 3
 
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tLinearLayer(1, w, dim3, M=M),
-#     torch.nn.Tanh(),
-#     tResNet(w, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-#     Permute((1, 0, 2)),
-#     View((-1, w * dim3)),
-#     torch.nn.Linear(w * dim3, 3)
-# )
-#
-#
-# h = 1.0
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tLinearLayer(1, w, dim3, M=M),
-#     torch.nn.Tanh(),
-#     tHamiltonianResNet(w, width=w, dim3=dim3, M=M, depth=32, h=h, activation=torch.nn.Tanh()),
-#     Permute((1, 0, 2)),
-#     View((-1, w * dim3)),
-#     torch.nn.Linear(w * dim3, 3)
-# )
-#
+alpha = 1e-4
+regularizer = BlockRegularization((None, None,
+                                   SmoothTimeRegularization(alpha=alpha / h),
+                                   None, None,
+                                   TikhonovRegularization(alpha=0.0)))
 
-# net = torch.nn.Sequential(
-#     View((-1, 1, 3)),
-#     Permute((1, 0, 2)),
-#     tLinearLayer(1, 3, dim3, M=M, activation=torch.nn.Tanh()),
-#     Permute((1, 0, 2)),
-#     View((-1, 3 * 3)),
-#     torch.nn.Linear(9, 3)
-# )
-
-# for layer in net[4].layers:
-#     layer.layer.weight.data = torch.randn_like(layer.layer.weight.data)
-#     layer.layer.bias.data = torch.zeros_like(layer.layer.bias.data)
-
-# regularizer = BlockRegularization((None, None,
-#                                    SmoothTimeRegularization(alpha=1 / h),
-#                                    None, None,
-#                                    TikhonovRegularization(alpha=0.0)))
-
-regularizer = None
-
+# regularizer = None
 
 #%% create loss function
 from tnn.loss import tCrossEntropyLoss
@@ -203,14 +113,6 @@ with torch.no_grad():
     for layer in net[2].layers:
         z.append(deepcopy(layer(z[-1], M)))
 
-    # z = [deepcopy(net[1](net[0](data_train[0])))]
-    #
-    # # z.append(net[3](net[2](z[-1])))
-    #
-    # t2 = None
-    # for layer in net[2].layers:
-    #     t1, t2 = layer(z[-1], t2, M)
-    #     z.append(t1)
 
 for i in [0, 1, 2, 8, 16, 32]:
     fig = plt.figure()
@@ -219,6 +121,9 @@ for i in [0, 1, 2, 8, 16, 32]:
     # ax.set_xlim(z[0][0, :, 1].min(), z[0][0, :, 1].max())
     # ax.set_ylim(z[0][0, :, 1].min(), z[0][0, :, 1].max())
     # ax.set_zlim(z[0][0, :, 1].min(), z[0][0, :, 1].max())
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-10, 10)
+    ax.set_zlim(-10, 10)
     plt.show()
 
     # close figure

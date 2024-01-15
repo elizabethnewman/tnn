@@ -158,3 +158,9 @@ examples/mnist_img/*
 examples/cifar10_img/*
 examples/tmp/*
 examples/mnist_acc_per_class/*
+examples/autoencoder/data/*
+examples/autoencoder/data/MNIST/raw/t10k-images-idx3-ubyte
+examples/autoencoder/data/MNIST/raw/t10k-images-idx3-ubyte
+examples/autoencoder/data/MNIST/raw/t10k-labels-idx1-ubyte
+examples/autoencoder/data/MNIST/raw/t10k-images-idx3-ubyte
+examples/autoencoder/experiments/*

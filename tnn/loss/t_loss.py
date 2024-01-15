@@ -16,7 +16,7 @@ class tMSELoss(tLoss):
 
     def forward(self, input, target):
         input = input.permute(1, 0, 2)
-        return F.mse_loss(input.reshape(input.shape[0], -1), target, reduction=self.reduction)
+        return F.mse_loss(input.reshape(target.shape), target, reduction=self.reduction)
 
 
 class tCrossEntropyLoss(tLoss):

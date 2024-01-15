@@ -5,7 +5,7 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full/tensor/'
+load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full2/tensor/'
 
 subdir_names = []
 for subdir_name in os.listdir(load_dir):
@@ -23,7 +23,7 @@ for subdir_name in subdir_names:
     weights_tensor.append(torch.load(load_dir + subdir_name + '/best_val_acc_net.pt', map_location=torch.device('cpu')))
 
 
-load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full/matrix/'
+load_dir = '/Users/elizabethnewman/Desktop/tnn_results/mnist_full2/matrix/'
 
 subdir_names = []
 for subdir_name in os.listdir(load_dir):
@@ -190,20 +190,20 @@ from copy import deepcopy
 store = torch.zeros(10, 2, 3)
 
 for k, tmp in enumerate([train_loader, val_loader, test_loader]):
-    # out = test(net_matrix, loss_matrix, tmp)
-    # print('matrix:', out[1])
+    out = test(net_matrix, loss_matrix, tmp)
+    print('matrix:', out[1])
     out = test(net_tensor, loss_tensor, tmp)
     print('tensor:', out[1])
 
-    # for i in range(10):
-    #     tmp_loader = deepcopy(tmp)
-    #     tmp_loader.dataset.data = tmp_loader.dataset.data[tmp_loader.dataset.targets == i]
-    #     tmp_loader.dataset.targets = tmp_loader.dataset.targets[tmp_loader.dataset.targets == i]
-    #     mat_out = test(net_matrix, loss_matrix, tmp_loader)
-    #     ten_out = test(net_tensor, loss_tensor, tmp_loader)
-    #     print(i, sum(tmp_loader.dataset.targets == i).item())
-    #     store[i, 0, k] = mat_out[1]
-    #     store[i, 1, k] = ten_out[1]
+    for i in range(10):
+        tmp_loader = deepcopy(tmp)
+        tmp_loader.dataset.data = tmp_loader.dataset.data[tmp_loader.dataset.targets == i]
+        tmp_loader.dataset.targets = tmp_loader.dataset.targets[tmp_loader.dataset.targets == i]
+        mat_out = test(net_matrix, loss_matrix, tmp_loader)
+        ten_out = test(net_tensor, loss_tensor, tmp_loader)
+        # print(i, sum(tmp_loader.dataset.targets == i).item())
+        store[i, 0, k] = mat_out[1]
+        store[i, 1, k] = ten_out[1]
     # print('class = {:d}:\t mat = {:<15.2f} ten = {:<15.2f}'.format(i, mat_out[1], ten_out[1]))
 
 # print store for latex
@@ -230,33 +230,40 @@ if not os.path.exists('mnist_img'):
 
 net_tensor.eval()
 
+digits = [0] * 10
+
+seed_everything(42)
 with torch.no_grad():
-    x, y = next(iter(train_loader))
+    for data in train_loader:
+        xb, yb = data
 
-    x_list = [deepcopy(x)]
+        x_list = [deepcopy(xb)]
+        x_list.append(net_tensor[1](net_tensor[0](x_list[-1])).permute(1, 0, 2))
 
-    x_list.append(net_tensor[1](net_tensor[0](x_list[-1])).permute(1, 0, 2))
-    # x_list.append(net_tensor[4](net_tensor[3](net_tensor[2](x_list[-1].permute(1, 0, 2)))))
+        for i in range(xb.shape[0]):
+            # plt.subplot(4, 8, i + 1)
+            label = yb[i]
+            if digits[label] == 10:
+                continue
+            else:
+                digits[label] += 1
 
+                # plt.clf()
+                # plt.imshow(x_list[0][i, :, :].squeeze(), vmax=x_list[0].max(), vmin=x_list[0].min(), cmap='gray')
+                # plt.axis('off')
+                # label = int(yb[i])
+                # plt.savefig('mnist_img/input_' + str(label) + '_img_' + str(digits[label]) + '.png',
+                #             bbox_inches='tight')
 
-# for i in range(x.shape[0]):
-#     # plt.subplot(4, 8, i + 1)
-#     plt.clf()
-#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min(), cmap='gray')
-#     plt.axis('off')
-#     plt.savefig('mnist_img/mnist_input_' + str(i) + '.png', bbox_inches='tight')
+                plt.clf()
+                plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1, cmap='viridis')
+                plt.axis('off')
+                label = int(yb[i])
+                plt.savefig('mnist_img/tensor_linear_digit_' + str(label) + '_img_' + str(digits[label]) + '.png',
+                            bbox_inches='tight')
 
-#
-# plt.show()
-
-
-for i in range(x.shape[0]):
-    # plt.subplot(4, 8, i + 1)
-    plt.clf()
-    plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1)
-    plt.axis('off')
-    plt.savefig('mnist_img/mnist_features_tensor_' + str(i) + '.png', bbox_inches='tight')
-
+        if min(digits) == 10:
+            break
 
 # plt.show()
 
@@ -285,28 +292,42 @@ net_matrix2.load_state_dict(weights_matrix[-1])
 
 net_matrix2.eval()
 
+digits = [0] * 10
+
+seed_everything(42)
 with torch.no_grad():
-    x, y = next(iter(train_loader))
+    for data in train_loader:
+        xb, yb = data
 
-    x_list = [deepcopy(x)]
-    x_list.append(net_matrix2[1](net_matrix2[0](x_list[-1])).reshape(-1, 28, 28))
+        x_list = [deepcopy(xb)]
+        x_list.append(net_matrix2[1](net_matrix2[0](x_list[-1])).reshape(-1, 28, 28))
+
+        for i in range(xb.shape[0]):
+            # plt.subplot(4, 8, i + 1)
+            label = yb[i]
+            if digits[label] == 10:
+                continue
+            else:
+                digits[label] += 1
+
+                # plt.clf()
+                # plt.imshow(x_list[0][i, :, :].squeeze(), vmax=x_list[0].max(), vmin=x_list[0].min(), cmap='gray')
+                # plt.axis('off')
+                # label = int(yb[i])
+                # plt.savefig('mnist_img/input_' + str(label) + '_img_' + str(digits[label]) + '.png',
+                #             bbox_inches='tight')
+
+                plt.clf()
+                plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1, cmap='viridis')
+                plt.axis('off')
+                label = int(yb[i])
+                plt.savefig('mnist_img/matrix_digit_' + str(label) + '_img_' + str(digits[label]) + '.png',
+                            bbox_inches='tight')
+
+        if min(digits) == 10:
+            break
 
 
-# for i in range(x.shape[0]):
-#     # plt.subplot(4, 8, i + 1)
-#     plt.imshow(x_list[0][i, 0, :, :], vmax=x_list[0].max(), vmin=x_list[0].min())
-#     plt.axis('off')
-#     plt.savefig('mnist_img/mnist_input_' + str(i) + '.png', bbox_inches='tight')
-
-# plt.show()
-
-
-for i in range(x.shape[0]):
-    # plt.subplot(4, 8, i + 1)
-    plt.clf()
-    plt.imshow(x_list[1][i, :, :], vmax=1, vmin=-1)
-    plt.axis('off')
-    plt.savefig('mnist_img/mnist_features_matrix_' + str(i) + '.png', bbox_inches='tight')
 
 
 # plt.show()
@@ -323,48 +344,60 @@ for i in range(x.shape[0]):
 from tnn.loss.t_loss import t_softmax
 import matplotlib as mpl
 
-x, y = next(iter(test_loader))
-z = net_tensor(x)
-tmp3 = t_softmax(z, M=M, return_spatial=False)
+if not os.path.exists('mnist_acc_per_class'):
+    os.mkdir('mnist_acc_per_class')
 
-xx, yy = torch.meshgrid(torch.arange(10), torch.arange(28), indexing='ij')
-xx, yy = xx.ravel(), yy.ravel()
+for ii, data in enumerate(test_loader):
+    x, y = data
+# x, y = next(iter(test_loader))
 
-# fig = plt.figure(figsize=(8, 8))
-# ax = fig.add_subplot(111, projection='3d')
-# tt = tmp3[:, 19, :].detach().reshape(-1)
-# colors = plt.cm.viridis(tt.flatten() / float(tt.max()))
-#
-# p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
-# fig.colorbar(p, cmap=colors)
-# plt.show()
-#
-# fig = plt.figure(figsize=(8, 8))
-# ax = fig.add_subplot(111, projection='3d')
-# tt = tmp3[:, 19, :].detach().reshape(-1)
+    z = net_tensor(x)
+    tmp3 = t_softmax(z, M=M, return_spatial=False)
 
+    xx, yy = torch.meshgrid(torch.arange(10), torch.arange(28), indexing='ij')
+    xx, yy = xx.ravel(), yy.ravel()
 
-loss, target_pred = loss_tensor(z, y)
-pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
-
-colors = mpl.colormaps['hot']
-
-for i in range(tmp3.shape[1]):
-    plt.imshow(tmp3[:, i, :].detach(), vmin=0, vmax=1, cmap=colors)
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = fig.add_subplot(111, projection='3d')
+    # tt = tmp3[:, 19, :].detach().reshape(-1)
+    # colors = plt.cm.viridis(tt.flatten() / float(tt.max()))
+    #
     # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
     # fig.colorbar(p, cmap=colors)
-    # plt.colorbar()
-    plt.axis('off')
     # plt.show()
-    plt.savefig(f'mnist_acc_per_class/img_{i}_tloss.png', bbox_inches='tight', pad_inches=0)
+    #
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = fig.add_subplot(111, projection='3d')
+    # tt = tmp3[:, 19, :].detach().reshape(-1)
+
+
+    loss, target_pred = loss_tensor(z, y)
+    pred = target_pred.argmax(dim=1, keepdim=True).squeeze()
+
+    colors = mpl.colormaps['hot']
+
+    for i in range(tmp3.shape[1]):
+        plt.imshow(tmp3[:, i, :].detach(), vmin=0, vmax=1, cmap=colors)
+        # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
+        # fig.colorbar(p, cmap=colors)
+        # plt.colorbar()
+        plt.axis('off')
+        # plt.show()
+        plt.savefig(f'mnist_acc_per_class/img_{i + ii * x.shape[0]}_tloss_true_{y[i]}_pred_{pred[i]}.png', bbox_inches='tight', pad_inches=0)
 
 
 
-for i in range(x.shape[0]):
-    plt.imshow(x[i].squeeze(), vmin=x.min(), vmax=x.max(), cmap='gray')
-    # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
-    # fig.colorbar(p, cmap=colors)
-    # plt.colorbar()
-    plt.axis('off')
-    # plt.show()
-    plt.savefig(f'mnist_acc_per_class/orig_{i}.png', bbox_inches='tight', pad_inches=0)
+    for i in range(x.shape[0]):
+        plt.imshow(x[i].squeeze(), vmin=x.min(), vmax=x.max(), cmap='gray')
+        # p = ax.bar3d(xx, yy, torch.zeros_like(xx), 1, 1, tt, color=colors)
+        # fig.colorbar(p, cmap=colors)
+        # plt.colorbar()
+        plt.axis('off')
+        # plt.show()
+        plt.savefig(f'mnist_acc_per_class/orig_{i + ii * x.shape[0]}.png', bbox_inches='tight', pad_inches=0)
+
+    if ii > 2:
+        break
+
+
+#%% features per digits

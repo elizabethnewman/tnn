@@ -15,6 +15,7 @@ def setup_parser():
     parser.add_argument('--gamma', type=float, default=1, help='decay rate for scheduler')
     parser.add_argument('--step_size', type=float, default=100, help='step size for scheduler')
     parser.add_argument('--width', type=int, default=10, help='width of network')
+    parser.add_argument('--auto_width', type=int, default=20, help='autoencoder additional width of network')
     parser.add_argument('--depth', type=int, default=4, help='depth of network')
     parser.add_argument('--h_step', type=float, default=0.1, help='number of steps in Hamiltonian')
     parser.add_argument('--alpha', type=float, default=0.0, help='regularization parameter')
