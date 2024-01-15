@@ -3,7 +3,7 @@ from torchvision import datasets, transforms
 import argparse
 
 
-def setup_cifar100(n_train=50000, n_val=10000, n_test=10000, batch_size=64, data_dir='data'):
+def setup_cifar100(n_train=40000, n_val=10000, n_test=10000, batch_size=64, data_dir='data'):
     # https://priyanshwarke2015-ndcs.medium.com/image-classification-with-cnn-model-in-cifar100-dataset-8d4122b75bad
     transform = transforms.Compose(
         [transforms.ToTensor(),
