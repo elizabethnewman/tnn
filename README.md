@@ -17,7 +17,7 @@ Matrix-Mimetic Tensor Neural Networks
 
 Using `pip`
 ```console
-python -m pip install git+https://<personal_access_token>@github.com/elizabethnewman/tnn.git
+python -m pip install git+https://github.com/elizabethnewman/tnn.git
 ```
 
 Using `github`
