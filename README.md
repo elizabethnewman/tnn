@@ -117,3 +117,6 @@ optimizer = torch.optim.Adam(net.parameters())
 results = train(net, loss, optimizer, train_loader, test_loader, max_epochs=10, verbose=True, device=device)
 ```
 
+## Reproducibility
+
+See the [examples](https://github.com/elizabethnewman/tnn/tree/main/examples) folder for details about reproducing the experiments from the paper.
