@@ -13,6 +13,6 @@ The ```csv``` files contain the arguments one wants to pass through the script.
 The following ```csv``` files will run the same experiments as those presented in the paper.
 * MNIST Autoencoder: ```autoencoder_paper.csv```
 * MNIST Classification: ```mnist_paper2.csv```
-* CIFAR10 Classification: ```cifar10_paper.csv```
-* CIFAR10 Timing: ```cifar10_timing.csv```
+* CIFAR10 Classification: ```cifar10_paper2.csv```
+* CIFAR10 Timing: ```cifar10_paper.csv```
 * CIFAR100 Classification: ```cifar100_paper.csv```
