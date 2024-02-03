@@ -16,3 +16,5 @@ The following ```csv``` files will run the same experiments as those presented i
 * CIFAR10 Classification: ```cifar10_paper2.csv```
 * CIFAR10 Timing: ```cifar10_paper.csv```
 * CIFAR100 Classification: ```cifar100_paper.csv```
+
+To replicate the visualizations for Hamiltonian layers, run the following:
