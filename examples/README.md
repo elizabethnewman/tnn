@@ -17,8 +17,8 @@ The following ```csv``` files will run the same experiments as those presented i
 * CIFAR10 Timing: ```cifar10_paper.csv```
 * CIFAR100 Classification: ```cifar100_paper.csv```
 
-To replicate the visualizations for Hamiltonian layers, run the following:
+To replicate the visualizations for Hamiltonian layers, run the following from the command line:
 ```console
-python ex_trajectories/ex_euler2.py
-python ex_trajectories/ex_leapfrog.py
+python tensor_trajectories/ex_euler2.py
+python tensor_trajectories/ex_leapfrog.py
 ```
