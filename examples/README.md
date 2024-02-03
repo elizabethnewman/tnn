@@ -18,3 +18,7 @@ The following ```csv``` files will run the same experiments as those presented i
 * CIFAR100 Classification: ```cifar100_paper.csv```
 
 To replicate the visualizations for Hamiltonian layers, run the following:
+```console
+python ex_trajectories/ex_euler2.py
+python ex_trajectories/ex_leapfrog.py
+```
