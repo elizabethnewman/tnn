@@ -1,4 +1,5 @@
 script_dir,script_name,data_dir,seed,max_epochs,M,batch_size,n_train,n_val,n_test,weight_decay,lr,gamma,step_size,width,depth,h_step,alpha,add_width_hamiltonian,opening_layer,loss,bias,matrix_match_tensor,auto_width
+autoencoder,ex_autoencoder_matrix.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,280,8,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,560
+autoencoder,ex_autoencoder_matrix.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,280,8,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,40
+autoencoder,ex_autoencoder_matrix.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,10,8,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,42
 autoencoder,ex_autoencoder_tensor.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,10,4,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,20
-autoencoder,ex_autoencoder_matrix.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,10,8,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,40
-autoencoder,ex_autoencoder_matrix.py,data,42,200,dct,32,50000,10000,10000,0,1.00E-03,0.9,100,280,8,0.25,1.00E-02,0,FALSE,t_cross_entropy,1,FALSE,42
