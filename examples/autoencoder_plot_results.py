@@ -59,7 +59,7 @@ net_idx = 0
 loss = torch.nn.MSELoss()
 
 #%%
-args = results_matrix[net_idx]['args']
+args = results_matrix[net_idx + 1]['args']
 
 net_matrix = torch.nn.Sequential(View((-1, 784)),
                                  FullyConnected((784, args.auto_width, args.width), activation=torch.nn.Tanh(),
@@ -75,7 +75,7 @@ seed_everything(args.seed)
 train_loader, val_loader, test_loader = setup_mnist(args.n_train, args.n_val, args.n_test, args.batch_size,
                                                     args.data_dir)
 
-net_matrix.load_state_dict(weights_matrix[net_idx])
+net_matrix.load_state_dict(weights_matrix[net_idx + 1])
 
 test_out = test(net_matrix, loss, test_loader)
 
@@ -139,52 +139,52 @@ print('accuracy = {:<15.4f}'.format(test_out[1]))
 
 #%% approximations
 
-import matplotlib.pyplot as plt
-x, y = next(iter(test_loader))
-z_mat = net_matrix(x).cpu().detach()
-z_ten = net_tensor(x).cpu().detach()
-
-
-vmax = x.max()
-vmin = x.min()
-vmax_diff = max((x - z_mat).abs().max(), (x - z_ten).abs().max())
-
-plt.figure()
-for i in range(x.shape[0]):
-    plt.figure()
-    plt.imshow(x[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
-    plt.axis('off')
-    plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/orig_' + str(i) + '.png',
-                bbox_inches='tight', pad_inches=0.0)
-    plt.close()
-
-    plt.figure()
-    plt.imshow(z_mat[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
-    plt.axis('off')
-    plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/matrix_approx_' + str(i) + '.png',
-                bbox_inches='tight', pad_inches=0.0)
-    plt.close()
-
-    plt.figure()
-    plt.imshow((x[i] - z_mat[i]).abs().squeeze(), vmin=0.0, vmax=vmax_diff, cmap='hot')
-    plt.axis('off')
-    plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/matrix_diff_' + str(i) + '.png',
-                bbox_inches='tight', pad_inches=0.0)
-    plt.close()
-
-    plt.figure()
-    plt.imshow(z_ten[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
-    plt.axis('off')
-    plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/tensor_approx_' + str(i) + '.png',
-                bbox_inches='tight', pad_inches=0.0)
-    plt.close()
-
-    plt.figure()
-    plt.imshow((x[i] - z_ten[i]).abs().squeeze(), vmin=0.0, vmax=vmax_diff, cmap='hot')
-    plt.axis('off')
-    plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/tensor_diff_' + str(i) + '.png',
-                bbox_inches='tight', pad_inches=0.0)
-    plt.close()
+# import matplotlib.pyplot as plt
+# x, y = next(iter(test_loader))
+# z_mat = net_matrix(x).cpu().detach()
+# z_ten = net_tensor(x).cpu().detach()
+#
+#
+# vmax = x.max()
+# vmin = x.min()
+# vmax_diff = max((x - z_mat).abs().max(), (x - z_ten).abs().max())
+#
+# plt.figure()
+# for i in range(x.shape[0]):
+#     plt.figure()
+#     plt.imshow(x[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
+#     plt.axis('off')
+#     plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/orig_' + str(i) + '.png',
+#                 bbox_inches='tight', pad_inches=0.0)
+#     plt.close()
+#
+#     plt.figure()
+#     plt.imshow(z_mat[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
+#     plt.axis('off')
+#     plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/matrix_560_280_approx_' + str(i) + '.png',
+#                 bbox_inches='tight', pad_inches=0.0)
+#     plt.close()
+#
+#     plt.figure()
+#     plt.imshow((x[i] - z_mat[i]).abs().squeeze(), vmin=0.0, vmax=vmax_diff, cmap='hot')
+#     plt.axis('off')
+#     plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/matrix_560_280_diff_' + str(i) + '.png',
+#                 bbox_inches='tight', pad_inches=0.0)
+#     plt.close()
+#
+#     plt.figure()
+#     plt.imshow(z_ten[i].squeeze(), vmin=vmin, vmax=vmax, cmap='gray')
+#     plt.axis('off')
+#     plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/tensor_approx_' + str(i) + '.png',
+#                 bbox_inches='tight', pad_inches=0.0)
+#     plt.close()
+#
+#     plt.figure()
+#     plt.imshow((x[i] - z_ten[i]).abs().squeeze(), vmin=0.0, vmax=vmax_diff, cmap='hot')
+#     plt.axis('off')
+#     plt.savefig('/Users/elizabethnewman/Desktop/tnn_results/autoencoder/approx/tensor_diff_' + str(i) + '.png',
+#                 bbox_inches='tight', pad_inches=0.0)
+#     plt.close()
 
 
     # plt.subplot(3, 8, i + 1 + 1 * 8)
