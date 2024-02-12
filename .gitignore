@@ -164,3 +164,4 @@ examples/autoencoder/data/MNIST/raw/t10k-images-idx3-ubyte
 examples/autoencoder/data/MNIST/raw/t10k-labels-idx1-ubyte
 examples/autoencoder/data/MNIST/raw/t10k-images-idx3-ubyte
 examples/autoencoder/experiments/*
+data/
