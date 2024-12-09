@@ -2,7 +2,23 @@
 Matrix-Mimetic Tensor Neural Networks 
 
 ## Citation
+
+The paper is published [here](https://www.frontiersin.org/journals/big-data/articles/10.3389/fdata.2024.1363978/full).
 ```
+@article{newman_stable_2024,
+	title = {Stable tensor neural networks for efficient deep learning},
+	volume = {7},
+	issn = {2624-909X},
+	url = {https://www.frontiersin.org/articles/10.3389/fdata.2024.1363978/full},
+	doi = {10.3389/fdata.2024.1363978},
+	urldate = {2024-09-27},
+	journal = {Frontiers in Big Data},
+	author = {Newman, Elizabeth and Horesh, Lior and Avron, Haim and Kilmer, Misha E.},
+	month = may,
+	year = {2024},
+	pages = {1363978},
+}
+
 @misc{newman2018stable,
       title={Stable Tensor Neural Networks for Rapid Deep Learning}, 
       author={Elizabeth Newman and Lior Horesh and Haim Avron and Misha Kilmer},
